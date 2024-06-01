@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tour_del_norte_app/utils/app_size.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -16,8 +17,8 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-          horizontal: AppSize.defaultPaddingHorizontal,
-          vertical: AppSize.defaultPadding),
+          horizontal: AppSize.defaultPaddingHorizontal * 1.5,
+          vertical: AppSize.defaultPadding * 0.75),
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(),
@@ -40,12 +41,15 @@ class CustomTextField extends StatelessWidget {
                       left: BorderSide(),
                     ),
                   ),
-                  child: TextField(
-                    obscureText: obscureText,
-                    decoration: InputDecoration(
-                      border:
-                          const OutlineInputBorder(borderSide: BorderSide.none),
-                      hintText: hintText,
+                  child: SizedBox(
+                    height: 50.h, // Altura deseada para el TextField
+                    child: TextField(
+                      obscureText: obscureText,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(
+                            borderSide: BorderSide.none),
+                        hintText: hintText,
+                      ),
                     ),
                   ),
                 ),
