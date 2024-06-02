@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:tour_del_norte_app/features/auth/widgets/widgets.dart';
+import 'package:tour_del_norte_app/features/auth/presentation/widgets/widgets.dart';
 import 'package:tour_del_norte_app/features/shared/shared.dart';
 import 'package:tour_del_norte_app/utils/app_assets.dart';
 import 'package:tour_del_norte_app/utils/app_colors.dart';

@@ -22,8 +22,8 @@ class CustomCTAButton extends StatelessWidget {
         child: ElevatedButton(
           style: ButtonStyle(
             backgroundColor:
-                const MaterialStatePropertyAll(AppColors.primaryColor),
-            shape: MaterialStatePropertyAll(
+                const WidgetStatePropertyAll(AppColors.primaryColor),
+            shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSize.defaultRadius),
               ),

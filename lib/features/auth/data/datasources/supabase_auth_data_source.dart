@@ -1,18 +1,18 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class AuthDataSource {
-  Future<bool> singIn({
+  Future<bool> signIn({
     required String email,
     required String password,
   });
 
-  Future<bool> singUp({
+  Future<bool> signUp({
     required String name,
     required String email,
     required String password,
   });
 
-  Future<void> singOut();
+  Future<void> signOut();
 
   bool isSignedIn();
 }
@@ -21,7 +21,7 @@ class SupabaseAuthDataSourceImpl implements AuthDataSource {
   final _supabase = Supabase.instance.client;
 
   @override
-  Future<bool> singIn({
+  Future<bool> signIn({
     required String email,
     required String password,
   }) async {
@@ -37,7 +37,7 @@ class SupabaseAuthDataSourceImpl implements AuthDataSource {
   }
 
   @override
-  Future<bool> singUp({
+  Future<bool> signUp({
     required String name,
     required String email,
     required String password,
@@ -54,7 +54,7 @@ class SupabaseAuthDataSourceImpl implements AuthDataSource {
   }
 
   @override
-  Future<void> singOut() async {
+  Future<void> signOut() async {
     await _supabase.auth.signOut();
   }
 

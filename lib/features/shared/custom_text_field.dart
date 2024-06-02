@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tour_del_norte_app/utils/app_size.dart';
+import 'package:tour_del_norte_app/utils/app_styles.dart';
 
 class CustomTextField extends StatelessWidget {
   final Icon icon;
@@ -44,6 +45,9 @@ class CustomTextField extends StatelessWidget {
                   child: SizedBox(
                     height: 50.h, // Altura deseada para el TextField
                     child: TextField(
+                      style: AppStyles.h4(
+                        fontWeight: FontWeight.w600,
+                      ),
                       obscureText: obscureText,
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(

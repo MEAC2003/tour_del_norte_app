@@ -1,16 +1,16 @@
 abstract class AuthRepository {
-  Future<bool> singIn({
+  Future<bool> signIn({
     required String email,
     required String password,
   });
 
-  Future<bool> singUp({
+  Future<bool> signUp({
     required String name,
     required String email,
     required String password,
   });
 
-  Future<void> singOut();
+  Future<void> signOut();
 
   bool isSignedIn();
 }
