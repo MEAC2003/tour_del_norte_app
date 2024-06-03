@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tour_del_norte_app/utils/utils.dart';
 
 class OrAccess extends StatelessWidget {
   const OrAccess({
@@ -7,22 +9,21 @@ class OrAccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 54),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 54.w),
       child: Row(
         children: [
           Expanded(
             child: Divider(
               color: Colors.black,
-              thickness: 0.5,
+              thickness: 0.5.w,
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
             child: Text(
               'O',
-              style: TextStyle(
-                fontSize: 14,
+              style: AppStyles.h4(
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -30,7 +31,7 @@ class OrAccess extends StatelessWidget {
           Expanded(
             child: Divider(
               color: Colors.black,
-              thickness: 0.5,
+              thickness: 0.5.w,
             ),
           ),
         ],

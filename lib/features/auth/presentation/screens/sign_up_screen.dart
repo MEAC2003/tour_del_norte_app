@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/widgets/widgets.dart';
 import 'package:tour_del_norte_app/features/shared/shared.dart';
-import 'package:tour_del_norte_app/utils/app_assets.dart';
-import 'package:tour_del_norte_app/utils/app_colors.dart';
-import 'package:tour_del_norte_app/utils/app_size.dart';
-import 'package:tour_del_norte_app/utils/app_styles.dart';
+import 'package:tour_del_norte_app/utils/utils.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
@@ -69,9 +66,6 @@ class _SignUpView extends StatelessWidget {
               icon: Icon(Icons.lock_person_outlined),
               hintText: 'Password',
               obscureText: true,
-            ),
-            SizedBox(
-              height: AppSize.defaultPadding,
             ),
             const CustomCTAButton(
               text: 'Registrarse',

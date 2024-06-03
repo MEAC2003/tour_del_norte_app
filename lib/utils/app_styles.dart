@@ -6,7 +6,7 @@ class AppStyles {
       TextStyle(fontSize: 32.sp, color: color, fontWeight: fontWeight);
 
   static TextStyle h2({Color? color, FontWeight? fontWeight}) => TextStyle(
-        fontSize: 20.sp,
+        fontSize: 24.sp,
         color: color ?? Colors.white,
         fontWeight: fontWeight ?? FontWeight.w400,
       );
