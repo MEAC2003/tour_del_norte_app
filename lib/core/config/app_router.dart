@@ -16,7 +16,7 @@ class AppRouter {
   static const String appRoot = '/app-root';
 
   static final router = GoRouter(
-    initialLocation: editProfile,
+    initialLocation: userProfile,
     routes: [
       GoRoute(
         path: home,
