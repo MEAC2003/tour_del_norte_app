@@ -3,7 +3,7 @@ import 'package:tour_del_norte_app/features/auth/presentation/screens/edit_profi
 import 'package:tour_del_norte_app/features/auth/presentation/screens/screen.dart';
 import 'package:tour_del_norte_app/features/home/presentation/screens/screens.dart';
 import 'package:tour_del_norte_app/features/root/screen/app_root.dart';
-import 'package:tour_del_norte_app/features/settings/screens/settings_screen.dart';
+import 'package:tour_del_norte_app/features/settings/presentation/screens/settings_screen.dart';
 
 class AppRouter {
   static const String home = '/';
@@ -16,7 +16,7 @@ class AppRouter {
   static const String appRoot = '/app-root';
 
   static final router = GoRouter(
-    initialLocation: userProfile,
+    initialLocation: settings,
     routes: [
       GoRoute(
         path: home,

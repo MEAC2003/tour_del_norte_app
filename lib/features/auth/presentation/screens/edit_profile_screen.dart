@@ -9,6 +9,15 @@ class EditProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return const _EditProfileView();
+  }
+}
+
+class _EditProfileView extends StatelessWidget {
+  const _EditProfileView();
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
