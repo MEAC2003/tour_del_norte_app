@@ -1,9 +1,8 @@
 import 'package:go_router/go_router.dart';
-import 'package:tour_del_norte_app/features/auth/presentation/screens/edit_profile_screen.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/screens/screen.dart';
 import 'package:tour_del_norte_app/features/home/presentation/screens/screens.dart';
 import 'package:tour_del_norte_app/features/root/screen/app_root.dart';
-import 'package:tour_del_norte_app/features/settings/presentation/screens/settings_screen.dart';
+import 'package:tour_del_norte_app/features/settings/presentation/screens/screens.dart';
 
 class AppRouter {
   static const String home = '/';
@@ -13,10 +12,11 @@ class AppRouter {
   static const String userProfile = '/user-profile';
   static const String editProfile = '/edit-profile';
   static const String settings = '/settings';
+  static const String faq = '/faq';
   static const String appRoot = '/app-root';
 
   static final router = GoRouter(
-    initialLocation: settings,
+    initialLocation: faq,
     routes: [
       GoRoute(
         path: home,
@@ -45,6 +45,10 @@ class AppRouter {
       GoRoute(
         path: settings,
         builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: faq,
+        builder: (context, state) => const Faq(),
       ),
       GoRoute(
         path: appRoot,

@@ -7,6 +7,15 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return const _SettingsView();
+  }
+}
+
+class _SettingsView extends StatelessWidget {
+  const _SettingsView();
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
