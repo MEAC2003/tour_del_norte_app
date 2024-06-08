@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
 
 class SocialMediaButton extends StatelessWidget {

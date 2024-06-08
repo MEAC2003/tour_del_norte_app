@@ -13,10 +13,11 @@ class AppRouter {
   static const String editProfile = '/edit-profile';
   static const String settings = '/settings';
   static const String faq = '/faq';
+  static const String reservation = '/reservation';
   static const String appRoot = '/app-root';
 
   static final router = GoRouter(
-    initialLocation: faq,
+    initialLocation: reservation,
     routes: [
       GoRoute(
         path: home,
@@ -49,6 +50,10 @@ class AppRouter {
       GoRoute(
         path: faq,
         builder: (context, state) => const FAQScreen(),
+      ),
+      GoRoute(
+        path: reservation,
+        builder: (context, state) => const ReservationScreen(),
       ),
       GoRoute(
         path: appRoot,

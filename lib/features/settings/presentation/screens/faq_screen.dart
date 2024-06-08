@@ -7,6 +7,15 @@ class FAQScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return const _FAQView();
+  }
+}
+
+class _FAQView extends StatelessWidget {
+  const _FAQView();
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
