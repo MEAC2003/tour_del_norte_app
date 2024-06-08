@@ -48,7 +48,7 @@ class AppRouter {
       ),
       GoRoute(
         path: faq,
-        builder: (context, state) => const Faq(),
+        builder: (context, state) => const FAQScreen(),
       ),
       GoRoute(
         path: appRoot,

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tour_del_norte_app/features/settings/presentation/widgets/widgets.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
 
-class Faq extends StatelessWidget {
-  const Faq({super.key});
+class FAQScreen extends StatelessWidget {
+  const FAQScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
