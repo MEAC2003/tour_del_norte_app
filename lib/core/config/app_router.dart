@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/screens/screen.dart';
+import 'package:tour_del_norte_app/features/general_info/presentation/screens/screens.dart';
 import 'package:tour_del_norte_app/features/home/presentation/screens/screens.dart';
 import 'package:tour_del_norte_app/features/root/screen/app_root.dart';
 import 'package:tour_del_norte_app/features/settings/presentation/screens/screens.dart';
@@ -14,10 +15,11 @@ class AppRouter {
   static const String settings = '/settings';
   static const String faq = '/faq';
   static const String reservation = '/reservation';
+  static const String businessInformation = '/business-information';
   static const String appRoot = '/app-root';
 
   static final router = GoRouter(
-    initialLocation: reservation,
+    initialLocation: businessInformation,
     routes: [
       GoRoute(
         path: home,
@@ -54,6 +56,10 @@ class AppRouter {
       GoRoute(
         path: reservation,
         builder: (context, state) => const ReservationScreen(),
+      ),
+      GoRoute(
+        path: businessInformation,
+        builder: (context, state) => const BusinessInformationScreen(),
       ),
       GoRoute(
         path: appRoot,

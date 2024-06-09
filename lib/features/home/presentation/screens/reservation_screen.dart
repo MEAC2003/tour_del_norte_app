@@ -10,7 +10,6 @@ class ReservationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          //poner un alto de 56
           toolbarHeight: 56.h,
           leading: IconButton(
             padding: EdgeInsets.symmetric(
