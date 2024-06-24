@@ -7,7 +7,19 @@ class UserProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _UserProfileView();
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          'Perfil',
+          style: AppStyles.h1(
+            color: AppColors.darkColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      body: const _UserProfileView(),
+    );
   }
 }
 
@@ -16,48 +28,38 @@ class _UserProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Perfil',
-          style: AppStyles.h1(
-              color: AppColors.darkColor, fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: AppSize.defaultPaddingHorizontal * 1.5.w),
-        child: Column(
-          children: [
-            Divider(
-              color: AppColors.darkColor50,
-              thickness: 0.5.h,
-            ),
-            const UserInfoRow(
-              title: 'Nombre',
-              text: 'Manuel Enrique Anton Cisneros',
-            ),
-            const UserInfoRow(
-              title: 'Correo electrónico',
-              text: 'antonc@gmail.com',
-            ),
-            const UserInfoRow(
-              title: 'Numero de teléfono',
-              text: '912345678',
-            ),
-            const UserInfoRow(
-              title: 'DNI',
-              text: '12345678',
-            ),
-            const ImageCard(
-              imgPath: 'https://www.w3schools.com/w3images/avatar2.png',
-            ),
-            const CustomUserActionButton(
-              text: 'Editar datos',
-            ),
-          ],
-        ),
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: AppSize.defaultPaddingHorizontal * 1.5.w),
+      child: Column(
+        children: [
+          Divider(
+            color: AppColors.darkColor50,
+            thickness: 0.5.h,
+          ),
+          const UserInfoRow(
+            title: 'Nombre',
+            text: 'Manuel Enrique Anton Cisneros',
+          ),
+          const UserInfoRow(
+            title: 'Correo electrónico',
+            text: 'antonc@gmail.com',
+          ),
+          const UserInfoRow(
+            title: 'Numero de teléfono',
+            text: '912345678',
+          ),
+          const UserInfoRow(
+            title: 'DNI',
+            text: '12345678',
+          ),
+          const ImageCard(
+            imgPath: 'https://www.w3schools.com/w3images/avatar2.png',
+          ),
+          const CustomUserActionButton(
+            text: 'Editar datos',
+          ),
+        ],
       ),
     );
   }

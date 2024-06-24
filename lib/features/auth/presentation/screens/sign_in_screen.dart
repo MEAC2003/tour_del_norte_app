@@ -30,7 +30,7 @@ class _SignInView extends StatelessWidget {
             //colocar un imagen de 64x64
             Image.asset(
               AppAssets.logo,
-              width: 64.w,
+              width: 64.sw,
               height: 64.h,
             ),
             SizedBox(

@@ -28,41 +28,50 @@ class ReservationScreen extends StatelessWidget {
           ),
           backgroundColor: AppColors.primaryColor,
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: AppSize.defaultPadding,
-              ),
-              const CustomTextField(
-                hintText: 'Manuel Enrique Anton Cisneros',
-                obscureText: false,
-                icon: Icon(Icons.person),
-              ),
-              const CustomTextField(
-                hintText: 'antonc@gmail.com',
-                obscureText: false,
-                icon: Icon(Icons.email_outlined),
-              ),
-              const CustomTextField(
-                hintText: '912345678',
-                obscureText: false,
-                icon: Icon(Icons.numbers_outlined),
-              ),
-              const CustomTextField(
-                hintText: '12345678',
-                obscureText: false,
-                icon: Icon(Icons.badge_outlined),
-              ),
-              const CustomTextField(
-                hintText: 'FOTO DEL BREVETE',
-                obscureText: false,
-                icon: Icon(Icons.camera_alt_outlined),
-              ),
-              const DateRange(),
-              const CustomCTAButton(text: 'Consultar Reserva')
-            ],
+        body: const _ReservationView());
+  }
+}
+
+class _ReservationView extends StatelessWidget {
+  const _ReservationView();
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          SizedBox(
+            height: AppSize.defaultPadding,
           ),
-        ));
+          const CustomTextField(
+            hintText: 'Manuel Enrique Anton Cisneros',
+            obscureText: false,
+            icon: Icon(Icons.person),
+          ),
+          const CustomTextField(
+            hintText: 'antonc@gmail.com',
+            obscureText: false,
+            icon: Icon(Icons.email_outlined),
+          ),
+          const CustomTextField(
+            hintText: '912345678',
+            obscureText: false,
+            icon: Icon(Icons.numbers_outlined),
+          ),
+          const CustomTextField(
+            hintText: '12345678',
+            obscureText: false,
+            icon: Icon(Icons.badge_outlined),
+          ),
+          const CustomTextField(
+            hintText: 'FOTO DEL BREVETE',
+            obscureText: false,
+            icon: Icon(Icons.camera_alt_outlined),
+          ),
+          const DateRange(),
+          const CustomCTAButton(text: 'Consultar Reserva')
+        ],
+      ),
+    );
   }
 }

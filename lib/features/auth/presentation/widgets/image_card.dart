@@ -25,7 +25,7 @@ class ImageCard extends StatelessWidget {
           SizedBox(height: AppSize.defaultPadding),
           SizedBox(
             width: double.infinity,
-            height: 175.h,
+            height: 0.26.sh,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppSize.defaultRadius * 2),
               child: FadeInImage.assetNetwork(
