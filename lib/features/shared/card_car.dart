@@ -26,7 +26,7 @@ class CardCar extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: AppSize.defaultPadding * 1.1,
-        vertical: AppSize.defaultPadding,
+        vertical: AppSize.defaultPadding * 0.6,
       ),
       child: Container(
         width: double.infinity,
@@ -164,14 +164,21 @@ class CardCar extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         FadeInImage.assetNetwork(
-                          placeholder: AppAssets.googleIcon,
                           image: carImage,
                           fit: BoxFit.cover,
-                          placeholderFit: BoxFit.contain,
-                          placeholderScale: 0.5,
+                          placeholder: AppAssets.loading,
                           imageErrorBuilder: (context, error, stackTrace) {
-                            return const Center(
-                              child: Text('Error al cargar la imagen'),
+                            return Container(
+                              width: 0.4.sw,
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Error al cargar la imagen',
+                                overflow: TextOverflow.ellipsis,
+                                style: AppStyles.h5(
+                                  color: AppColors.darkColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             );
                           },
                           width: 0.43.sw,

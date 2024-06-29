@@ -1,9 +1,13 @@
 import 'package:go_router/go_router.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/screens/screen.dart';
+import 'package:tour_del_norte_app/features/auth/prueba.dart';
 import 'package:tour_del_norte_app/features/general_info/presentation/screens/screens.dart';
 import 'package:tour_del_norte_app/features/home/presentation/screens/screens.dart';
 import 'package:tour_del_norte_app/features/root/screen/app_root.dart';
 import 'package:tour_del_norte_app/features/settings/presentation/screens/screens.dart';
+import 'package:tour_del_norte_app/features/shared/shared.dart';
+//import de prueba
+import 'package:tour_del_norte_app/prueba.dart';
 
 class AppRouter {
   static const String home = '/';
@@ -16,14 +20,31 @@ class AppRouter {
   static const String faq = '/faq';
   static const String reservation = '/reservation';
   static const String businessInformation = '/business-information';
+  static const String prueba = '/prueba';
+  static const String pruebS = '/pruebaS';
   static const String appRoot = '/app-root';
 
   static final router = GoRouter(
-    initialLocation: businessInformation,
+    initialLocation: signIn,
     routes: [
-      GoRoute(
-        path: home,
-        builder: (context, state) => const HomeScreen(),
+      ShellRoute(
+        builder: (context, state, child) {
+          return NavBar(child: child);
+        },
+        routes: [
+          GoRoute(
+            path: home,
+            builder: (context, state) => const HomeScreen(),
+          ),
+          GoRoute(
+            path: userProfile,
+            builder: (context, state) => const UserProfileScreen(),
+          ),
+          GoRoute(
+            path: settings,
+            builder: (context, state) => const SettingsScreen(),
+          ),
+        ],
       ),
       GoRoute(
         path: carDetails,
@@ -38,16 +59,8 @@ class AppRouter {
         builder: (context, state) => const SignUpScreen(),
       ),
       GoRoute(
-        path: userProfile,
-        builder: (context, state) => const UserProfileScreen(),
-      ),
-      GoRoute(
         path: editProfile,
         builder: (context, state) => const EditProfileScreen(),
-      ),
-      GoRoute(
-        path: settings,
-        builder: (context, state) => const SettingsScreen(),
       ),
       GoRoute(
         path: faq,
@@ -64,6 +77,14 @@ class AppRouter {
       GoRoute(
         path: appRoot,
         builder: (context, state) => const AppRoot(),
+      ),
+      GoRoute(
+        path: prueba,
+        builder: (context, state) => const PruebasScreen(),
+      ),
+      GoRoute(
+        path: pruebS,
+        builder: (context, state) => const SINGINScreen(),
       ),
     ],
   );
