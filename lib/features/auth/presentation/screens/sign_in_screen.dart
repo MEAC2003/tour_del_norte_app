@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:tour_del_norte_app/core/config/app_router.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/widgets/widgets.dart';
 import 'package:tour_del_norte_app/features/shared/shared.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
+import 'package:tour_del_norte_app/features/auth/presentation/providers/auth_provider.dart';
 
 class SignInScreen extends StatelessWidget {
   const SignInScreen({super.key});
@@ -19,6 +23,7 @@ class _SignInView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
@@ -82,9 +87,23 @@ class _SignInView extends StatelessWidget {
               text: 'Iniciar sesión',
             ),
             const OrAccess(),
-            const SocialMediaButton(
+            SocialMediaButton(
               imgPath: AppAssets.googleIcon,
               text: ' Iniciar sesión con Google',
+              onPressed: () async {
+                final success = await authProvider.signInWithGoogle();
+                if (success) {
+                  // Navegar a la pantalla principal
+                  context.go(AppRouter.home);
+                } else {
+                  // Mostrar un mensaje de error
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text(authProvider.errorMessage ??
+                            'Error al iniciar sesión con Google')),
+                  );
+                }
+              },
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 1),

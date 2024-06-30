@@ -70,9 +70,10 @@ class _SignUpView extends StatelessWidget {
               text: 'Registrarse',
             ),
             const OrAccess(),
-            const SocialMediaButton(
+            SocialMediaButton(
               imgPath: AppAssets.googleIcon,
               text: ' Registrarse con Google',
+              onPressed: () {},
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 1),

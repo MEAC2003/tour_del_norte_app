@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:tour_del_norte_app/core/config/app_router.dart';
+import 'package:tour_del_norte_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:tour_del_norte_app/features/settings/presentation/widgets/widgets.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
 
@@ -63,7 +67,10 @@ class _SettingsView extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                onTap: () {},
+                onTap: () async {
+                  await context.read<AuthProvider>().signOut();
+                  context.go(AppRouter.signIn);
+                },
               ),
             ],
           ),

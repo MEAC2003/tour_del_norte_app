@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
 
 class SocialMediaButton extends StatelessWidget {
-  final String text, imgPath;
+  final String imgPath;
+  final String text;
+  final VoidCallback onPressed;
   const SocialMediaButton({
     super.key,
     required this.text,
     required this.imgPath,
+    required this.onPressed,
   });
 
   @override
@@ -29,7 +32,7 @@ class SocialMediaButton extends StatelessWidget {
               ),
             ),
           ),
-          onPressed: () {},
+          onPressed: onPressed,
           icon: Image.asset(imgPath, width: 24.w, height: 24.h),
           label: Text(
             text,
