@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:tour_del_norte_app/utils/app_colors.dart';
-import 'package:tour_del_norte_app/utils/app_size.dart';
-import 'package:tour_del_norte_app/utils/app_styles.dart';
+import 'package:tour_del_norte_app/utils/utils.dart';
 
 class CustomCTAButton extends StatelessWidget {
   final String text;
+  final VoidCallback onPressed;
   const CustomCTAButton({
     super.key,
     required this.text,
+    required this.onPressed,
   });
 
   @override
@@ -18,7 +18,7 @@ class CustomCTAButton extends StatelessWidget {
           vertical: AppSize.defaultPadding),
       child: SizedBox(
         width: double.infinity,
-        height: 60,
+        height: 60.h,
         child: ElevatedButton(
           style: ButtonStyle(
             backgroundColor:
@@ -29,7 +29,7 @@ class CustomCTAButton extends StatelessWidget {
               ),
             ),
           ),
-          onPressed: () {},
+          onPressed: onPressed,
           child: Text(
             text,
             style: AppStyles.h3(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tour_del_norte_app/features/home/presentation/widgets/widgets.dart';
 import 'package:tour_del_norte_app/features/shared/shared.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
@@ -16,7 +17,9 @@ class ReservationScreen extends StatelessWidget {
                 horizontal: AppSize.defaultPaddingHorizontal * 1.5),
             icon:
                 const Icon(Icons.arrow_back_ios, color: AppColors.primaryGrey),
-            onPressed: () {},
+            onPressed: () {
+              context.pop();
+            },
           ),
           centerTitle: true,
           title: Text(
@@ -69,7 +72,7 @@ class _ReservationView extends StatelessWidget {
             icon: Icon(Icons.camera_alt_outlined),
           ),
           const DateRange(),
-          const CustomCTAButton(text: 'Consultar Reserva')
+          CustomCTAButton(text: 'Consultar Reserva', onPressed: () {}),
         ],
       ),
     );

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tour_del_norte_app/features/general_info/data/models/information.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
 
 class SatisfiedCustomers extends StatelessWidget {
-  const SatisfiedCustomers({super.key});
+  final Information information;
+  const SatisfiedCustomers({super.key, required this.information});
 
   @override
   Widget build(BuildContext context) {
@@ -30,33 +32,14 @@ class SatisfiedCustomers extends StatelessWidget {
                   SizedBox(
                     height: AppSize.defaultPadding,
                   ),
-                  const Row(
-                    children: [
-                      SatisfiedCustomerCard(
-                        image: 'https://www.w3schools.com/w3images/avatar2.png',
-                      ),
-                      SatisfiedCustomerCard(
-                        image: 'https://www.w3schools.com/w3images/avatar2.png',
-                      ),
-                      SatisfiedCustomerCard(
-                        image: 'https://www.w3schools.com/w3images/avatar2.png',
-                      ),
-                      SatisfiedCustomerCard(
-                        image: 'https://www.w3schools.com/w3images/avatar2.png',
-                      ),
-                      SatisfiedCustomerCard(
-                        image: 'https://www.w3schools.com/w3images/avatar2.png',
-                      ),
-                      SatisfiedCustomerCard(
-                        image: 'https://www.w3schools.com/w3images/avatar2.png',
-                      ),
-                      SatisfiedCustomerCard(
-                        image: 'https://www.w3schools.com/w3images/avatar2.png',
-                      ),
-                      SatisfiedCustomerCard(
-                        image: 'https://www.w3schools.com/w3images/avatar2.png',
-                      ),
-                    ],
+                  Row(
+                    children: (information.clients ?? [])
+                        .map(
+                          (client) => SatisfiedCustomerCard(
+                            image: client,
+                          ),
+                        )
+                        .toList(),
                   ),
                 ],
               ),

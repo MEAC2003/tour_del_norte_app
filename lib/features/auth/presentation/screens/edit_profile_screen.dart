@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/widgets/widgets.dart';
 import 'package:tour_del_norte_app/features/shared/shared.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
@@ -14,7 +15,9 @@ class EditProfileScreen extends StatelessWidget {
             padding: EdgeInsets.symmetric(
                 horizontal: AppSize.defaultPaddingHorizontal * 1.5.w),
             icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () {},
+            onPressed: () {
+              context.pop();
+            },
           ),
           centerTitle: true,
           title: Text(
@@ -72,8 +75,9 @@ class _EditProfileView extends StatelessWidget {
           obscureText: false,
           icon: Icon(Icons.camera_alt_outlined),
         ),
-        const CustomUserActionButton(
+        CustomUserActionButton(
           text: 'Guardar',
+          onPressed: () {},
         ),
       ],
     );

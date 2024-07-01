@@ -7,11 +7,16 @@ class CustomTextField extends StatelessWidget {
   final Icon icon;
   final String hintText;
   final bool obscureText;
+  final TextEditingController? controller;
+  final String? Function(String?)? validator; // Añade esta línea
+
   const CustomTextField({
     super.key,
     required this.hintText,
     required this.obscureText,
     required this.icon,
+    this.controller,
+    this.validator, // Añade esta línea
   });
 
   @override
@@ -43,8 +48,9 @@ class CustomTextField extends StatelessWidget {
                     ),
                   ),
                   child: SizedBox(
-                    height: 50.h, // Altura deseada para el TextField
-                    child: TextField(
+                    height: 56.h,
+                    child: TextFormField(
+                      controller: controller,
                       style: AppStyles.h4(
                         fontWeight: FontWeight.w600,
                       ),
@@ -54,6 +60,7 @@ class CustomTextField extends StatelessWidget {
                             borderSide: BorderSide.none),
                         hintText: hintText,
                       ),
+                      validator: validator, // Añade esta línea
                     ),
                   ),
                 ),

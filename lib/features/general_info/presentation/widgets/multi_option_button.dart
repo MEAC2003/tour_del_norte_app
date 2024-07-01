@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:tour_del_norte_app/features/general_info/data/models/information.dart';
 import 'package:tour_del_norte_app/features/general_info/presentation/widgets/widgets.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
 
 class MultiOptionButton extends StatefulWidget {
-  const MultiOptionButton({
-    super.key,
-  });
+  final Information information;
+  const MultiOptionButton({super.key, required this.information});
 
   @override
   State<MultiOptionButton> createState() => _MultiOptionButtonState();
@@ -79,11 +79,11 @@ class _MultiOptionButtonState extends State<MultiOptionButton> {
             },
           ),
           if (selectedView == ContentView.actualidad)
-            const SatisfiedCustomers()
+            SatisfiedCustomers(information: widget.information)
           else if (selectedView == ContentView.nosotros)
-            const AboutUs()
+            AboutUs(information: widget.information)
           else if (selectedView == ContentView.creditos)
-            const Credits(),
+            Credits(information: widget.information),
         ],
       ),
     );

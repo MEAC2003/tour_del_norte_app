@@ -10,24 +10,24 @@ Information informationFromJson(String str) =>
 String informationToJson(Information data) => json.encode(data.toJson());
 
 class Information {
-  final int id;
-  final String createdAt;
-  final String present;
-  final String aboutUs;
-  final String mision;
-  final String vision;
-  final List<String> credits;
-  final List<String> clients;
+  final int? id;
+  final String? createdAt;
+  final String? present;
+  final String? aboutUs;
+  final String? mision;
+  final String? vision;
+  final List<String>? credits;
+  final List<String>? clients;
 
   Information({
-    required this.id,
-    required this.createdAt,
-    required this.present,
-    required this.aboutUs,
-    required this.mision,
-    required this.vision,
-    required this.credits,
-    required this.clients,
+    this.id,
+    this.createdAt,
+    this.present,
+    this.aboutUs,
+    this.mision,
+    this.vision,
+    this.credits,
+    this.clients,
   });
 
   Information copyWith({
@@ -58,8 +58,12 @@ class Information {
         aboutUs: json["about_us"],
         mision: json["mision"],
         vision: json["vision"],
-        credits: List<String>.from(json["credits"].map((x) => x)),
-        clients: List<String>.from(json["clients"].map((x) => x)),
+        credits: json["credits"] != null
+            ? List<String>.from(json["credits"].map((x) => x))
+            : null,
+        clients: json["clients"] != null
+            ? List<String>.from(json["clients"].map((x) => x))
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -69,7 +73,9 @@ class Information {
         "about_us": aboutUs,
         "mision": mision,
         "vision": vision,
-        "credits": List<dynamic>.from(credits.map((x) => x)),
-        "clients": List<dynamic>.from(clients.map((x) => x)),
+        "credits":
+            credits != null ? List<dynamic>.from(credits!.map((x) => x)) : null,
+        "clients":
+            clients != null ? List<dynamic>.from(clients!.map((x) => x)) : null,
       };
 }

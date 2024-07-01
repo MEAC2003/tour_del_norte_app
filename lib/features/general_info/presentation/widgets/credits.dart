@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tour_del_norte_app/features/general_info/data/models/information.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
 
 class Credits extends StatelessWidget {
-  const Credits({super.key});
+  final Information information;
+  const Credits({super.key, required this.information});
 
   @override
   Widget build(BuildContext context) {
@@ -21,58 +23,94 @@ class Credits extends StatelessWidget {
             ),
             textAlign: TextAlign.start,
           ),
-          SizedBox(
-            height: 0.28.sh,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: AppSize.defaultPadding,
+          SizedBox(height: AppSize.defaultPadding),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                onPressed: () {},
+                style: TextButton.styleFrom(
+                  backgroundColor: AppColors.primaryGrey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      AppSize.defaultRadius,
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        onPressed: () {},
-                        style: TextButton.styleFrom(
-                          backgroundColor: AppColors.primaryGrey,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppSize.defaultRadius,
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          'Imágenes',
-                          style: AppStyles.h4(
-                            color: AppColors.primaryColor,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        style: TextButton.styleFrom(
-                          backgroundColor: AppColors.primaryGrey,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppSize.defaultRadius,
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          'FreePik',
-                          style: AppStyles.h4(
-                            color: AppColors.primaryColor,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
+                ),
+                child: Text(
+                  'Imágenes',
+                  style: AppStyles.h4(
+                    color: AppColors.primaryColor,
+                    fontWeight: FontWeight.w500,
                   ),
-                ],
+                ),
               ),
-            ),
+              TextButton(
+                onPressed: () {},
+                style: TextButton.styleFrom(
+                  backgroundColor: AppColors.primaryGrey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      AppSize.defaultRadius,
+                    ),
+                  ),
+                ),
+                child: Text(
+                  information.credits != null && information.credits!.isNotEmpty
+                      ? information
+                          .credits![0] // Mostramos solo el primer crédito
+                      : 'No disponible',
+                  style: AppStyles.h4(
+                    color: AppColors.primaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                onPressed: () {},
+                style: TextButton.styleFrom(
+                  backgroundColor: AppColors.primaryGrey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      AppSize.defaultRadius,
+                    ),
+                  ),
+                ),
+                child: Text(
+                  'Imágenes',
+                  style: AppStyles.h4(
+                    color: AppColors.primaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () {},
+                style: TextButton.styleFrom(
+                  backgroundColor: AppColors.primaryGrey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      AppSize.defaultRadius,
+                    ),
+                  ),
+                ),
+                child: Text(
+                  information.credits != null && information.credits!.isNotEmpty
+                      ? information
+                          .credits![0] // Mostramos solo el primer crédito
+                      : 'No disponible',
+                  style: AppStyles.h4(
+                    color: AppColors.primaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

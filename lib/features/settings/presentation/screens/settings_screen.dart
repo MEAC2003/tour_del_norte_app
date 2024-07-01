@@ -22,12 +22,6 @@ class _SettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          padding: EdgeInsets.symmetric(
-              horizontal: AppSize.defaultPaddingHorizontal * 1.5),
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {},
-        ),
         centerTitle: true,
         title: Text(
           'Ajustes',
@@ -55,21 +49,34 @@ class _SettingsView extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                onTap: () {},
+                onTap: () {
+                  context.push(AppRouter.faq);
+                },
               ),
               SizedBox(height: AppSize.defaultPadding / 1.5),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(
-                  'Cerrar Sesión',
-                  style: AppStyles.h3(
-                    color: AppColors.darkColor,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                onTap: () async {
-                  await context.read<AuthProvider>().signOut();
-                  context.go(AppRouter.signIn);
+              Consumer<AuthProvider>(
+                builder: (context, authProvider, child) {
+                  final bool isSignedIn = authProvider.isSignedIn;
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      isSignedIn ? 'Cerrar Sesión' : 'Iniciar Sesión',
+                      style: AppStyles.h3(
+                        color: AppColors.darkColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onTap: () async {
+                      if (isSignedIn) {
+                        await context.read<AuthProvider>().signOut();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Sesión cerrada')),
+                        );
+                      } else {
+                        context.go(AppRouter.signIn);
+                      }
+                    },
+                  );
                 },
               ),
             ],

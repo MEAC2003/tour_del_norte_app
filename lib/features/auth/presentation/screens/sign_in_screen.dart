@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tour_del_norte_app/core/config/app_router.dart';
+import 'package:tour_del_norte_app/features/auth/data/datasources/supabase_auth_data_source.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/widgets/widgets.dart';
 import 'package:tour_del_norte_app/features/shared/shared.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
@@ -18,8 +19,68 @@ class SignInScreen extends StatelessWidget {
   }
 }
 
-class _SignInView extends StatelessWidget {
+class _SignInView extends StatefulWidget {
   const _SignInView();
+
+  @override
+  _SignInViewState createState() => _SignInViewState();
+}
+
+class _SignInViewState extends State<_SignInView> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _handleAuthResult(BuildContext context, AuthResult result) {
+    if (result.success) {
+      context.go(AppRouter.home);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            context.read<AuthProvider>().errorMessage ??
+                'Error de autenticación',
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget _buildForgotPasswordButton() {
+    return TextButton(
+      child: const Text('¿Olvidaste tu contraseña?'),
+      onPressed: () async {
+        final email = _emailController.text;
+        if (email.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Por favor, ingresa tu email')),
+          );
+          return;
+        }
+
+        final success = await context.read<AuthProvider>().resetPassword(email);
+        if (success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text(
+                    'Se ha enviado un email para restablecer tu contraseña')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(context.read<AuthProvider>().errorMessage ??
+                    'Error al restablecer la contraseña')),
+          );
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,23 +90,19 @@ class _SignInView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              height: AppSize.defaultPadding * 2,
-            ),
-            //colocar un imagen de 64x64
+            SizedBox(height: AppSize.defaultPadding * 2),
             Image.asset(
               AppAssets.logo,
-              width: 64.sw,
-              height: 64.h,
+              width: 120.w,
             ),
-            SizedBox(
-              height: AppSize.defaultPadding,
+            SizedBox(height: AppSize.defaultPadding),
+            Text(
+              'Iniciar sesión',
+              style: AppStyles.h1(
+                color: AppColors.darkColor,
+                fontWeight: FontWeight.w900,
+              ).copyWith(letterSpacing: -1.5),
             ),
-            Text('Iniciar sesión',
-                style: AppStyles.h1(
-                  color: AppColors.darkColor,
-                  fontWeight: FontWeight.w900,
-                ).copyWith(letterSpacing: -1.5)),
             Text(
               'Ingresa tus datos para continuar',
               style: AppStyles.h4(
@@ -53,56 +110,46 @@ class _SignInView extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(
-              height: AppSize.defaultPadding,
-            ),
-            const CustomTextField(
-              icon: Icon(Icons.email_outlined),
+            SizedBox(height: AppSize.defaultPadding),
+            CustomTextField(
+              controller: _emailController,
+              icon: const Icon(Icons.email_outlined),
               hintText: 'Enter email',
               obscureText: false,
             ),
-            const CustomTextField(
-              icon: Icon(Icons.lock_person_outlined),
+            CustomTextField(
+              controller: _passwordController,
+              icon: const Icon(Icons.lock_person_outlined),
               hintText: 'Password',
               obscureText: true,
             ),
             Padding(
               padding: EdgeInsets.symmetric(
-                  horizontal: AppSize.defaultPaddingHorizontal * 1.5),
+                horizontal: AppSize.defaultPaddingHorizontal * 1.5,
+              ),
               child: Align(
                 alignment: Alignment.centerRight,
-                child: Text(
-                  '¿Olvidaste tu contraseña?',
-                  style: AppStyles.h4(
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                child: _buildForgotPasswordButton(),
               ),
             ),
-            SizedBox(
-              height: AppSize.defaultPadding,
-            ),
-            const CustomCTAButton(
+            SizedBox(height: AppSize.defaultPadding),
+            CustomCTAButton(
               text: 'Iniciar sesión',
+              onPressed: () async {
+                final result = await authProvider.signInWithEmail(
+                  _emailController.text,
+                  _passwordController.text,
+                );
+                _handleAuthResult(context, result);
+              },
             ),
             const OrAccess(),
             SocialMediaButton(
               imgPath: AppAssets.googleIcon,
               text: ' Iniciar sesión con Google',
               onPressed: () async {
-                final success = await authProvider.signInWithGoogle();
-                if (success) {
-                  // Navegar a la pantalla principal
-                  context.go(AppRouter.home);
-                } else {
-                  // Mostrar un mensaje de error
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(authProvider.errorMessage ??
-                            'Error al iniciar sesión con Google')),
-                  );
-                }
+                final result = await authProvider.signInWithGoogle();
+                _handleAuthResult(context, result);
               },
             ),
             Padding(
@@ -118,7 +165,7 @@ class _SignInView extends StatelessWidget {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () => context.go(AppRouter.signUp),
                     child: Text(
                       'Regístrate',
                       style: AppStyles.h4(

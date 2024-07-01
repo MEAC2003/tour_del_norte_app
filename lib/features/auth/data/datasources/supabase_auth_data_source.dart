@@ -1,12 +1,25 @@
+// lib/features/auth/data/datasources/supabase_auth_data_source.dart
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+class AuthResult {
+  final bool success;
+  final bool isNewUser;
+  final String? error;
+
+  AuthResult({required this.success, required this.isNewUser, this.error});
+}
+
 abstract class AuthDataSource {
-  Future<bool> signInWithEmail(
+  Future<AuthResult> signInWithEmail(
       {required String email, required String password});
-  Future<bool> signUpWithEmail(
-      {required String name, required String email, required String password});
-  Future<bool> signInWithGoogle();
+  Future<AuthResult> signUpWithEmail(
+      {required String fullName,
+      required String email,
+      required String password});
+  Future<AuthResult> signInWithGoogle();
+  Future<void> resetPassword(String email);
   Future<void> signOut();
   bool isSignedIn();
 }
@@ -14,41 +27,68 @@ abstract class AuthDataSource {
 class SupabaseAuthDataSourceImpl implements AuthDataSource {
   final _supabase = Supabase.instance.client;
   final _googleSignIn = GoogleSignIn(
-    clientId:
-        '312853938836-3ncofuqfnufa86ni89d77j9gkkqrtg77.apps.googleusercontent.com',
-    serverClientId:
-        '312853938836-md2o3ffm3sre618cpugaufhj3qn7gcjq.apps.googleusercontent.com',
+    clientId: dotenv.env['GOOGLE_CLIENT_ID']!,
+    serverClientId: dotenv.env['GOOGLE_SERVER_CLIENT_ID']!,
   );
 
   @override
-  Future<bool> signInWithEmail(
+  Future<AuthResult> signInWithEmail(
       {required String email, required String password}) async {
     try {
-      await _supabase.auth.signInWithPassword(password: password, email: email);
-      return true;
+      final response = await _supabase.auth
+          .signInWithPassword(email: email, password: password);
+      return AuthResult(success: response.session != null, isNewUser: false);
     } catch (e) {
-      return false;
+      return AuthResult(success: false, isNewUser: false, error: e.toString());
     }
   }
 
   @override
-  Future<bool> signUpWithEmail(
-      {required String name,
-      required String email,
-      required String password}) async {
+  Future<AuthResult> signUpWithEmail({
+    required String fullName,
+    required String email,
+    required String password,
+  }) async {
     try {
-      await _supabase.auth.signUp(email: email, password: password);
-      return true;
+      final response = await _supabase.auth.signUp(
+        email: email,
+        password: password,
+        data: {'full_name': fullName},
+      );
+
+      if (response.user != null) {
+        // Actualizar el perfil del usuario con el nombre completo
+        await _supabase.from('profiles').upsert({
+          'id': response.user!.id,
+          'full_name': fullName,
+          'updated_at': DateTime.now().toIso8601String(),
+        });
+      }
+
+      return AuthResult(success: response.user != null, isNewUser: true);
     } catch (e) {
-      return false;
+      if (e.toString().contains('429')) {
+        return AuthResult(
+            success: false,
+            isNewUser: false,
+            error:
+                "Has excedido el límite de intentos. Por favor, espera unos minutos antes de intentar de nuevo.");
+      }
+      return AuthResult(success: false, isNewUser: false, error: e.toString());
     }
   }
 
   @override
-  Future<bool> signInWithGoogle() async {
+  Future<AuthResult> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return false;
+      if (googleUser == null) {
+        return AuthResult(
+          success: false,
+          isNewUser: false,
+          error: 'Google sign in was cancelled',
+        );
+      }
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
@@ -58,9 +98,12 @@ class SupabaseAuthDataSourceImpl implements AuthDataSource {
         accessToken: googleAuth.accessToken,
       );
 
-      return res.session != null;
+      final isNewUser = res.session?.user.appMetadata['provider'] == 'google' &&
+          res.session?.user.appMetadata['providers']?.length == 1;
+
+      return AuthResult(success: res.session != null, isNewUser: isNewUser);
     } catch (e) {
-      return false;
+      return AuthResult(success: false, isNewUser: false, error: e.toString());
     }
   }
 
@@ -72,4 +115,9 @@ class SupabaseAuthDataSourceImpl implements AuthDataSource {
 
   @override
   bool isSignedIn() => _supabase.auth.currentUser != null;
+
+  @override
+  Future<void> resetPassword(String email) async {
+    await Supabase.instance.client.auth.resetPasswordForEmail(email);
+  }
 }

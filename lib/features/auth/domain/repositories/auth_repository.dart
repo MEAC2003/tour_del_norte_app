@@ -1,9 +1,15 @@
+import 'package:tour_del_norte_app/features/auth/data/datasources/supabase_auth_data_source.dart';
+
 abstract class AuthRepository {
-  Future<bool> signInWithEmail(
+  Future<AuthResult> signInWithEmail(
       {required String email, required String password});
-  Future<bool> signUpWithEmail(
-      {required String name, required String email, required String password});
-  Future<bool> signInWithGoogle();
+  Future<AuthResult> signUpWithEmail({
+    required String fullName,
+    required String email,
+    required String password,
+  });
+  Future<AuthResult> signInWithGoogle();
+  Future<void> resetPassword(String email);
   Future<void> signOut();
   bool isSignedIn();
 }

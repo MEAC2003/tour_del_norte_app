@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tour_del_norte_app/features/general_info/data/models/information.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
 
 class AboutUs extends StatelessWidget {
-  const AboutUs({super.key});
+  final Information information;
+  const AboutUs({super.key, required this.information});
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +30,8 @@ class AboutUs extends StatelessWidget {
                 height: AppSize.defaultPadding * 0.5,
               ),
               Text(
-                'Manejando nuestros vehículos híbridos descubrirás el verdadero significado de la nueva tecnología híbrida eléctrica auto-recargable, un máximo rendimiento y menor consumo, gracias a la óptima combinación de su motor eléctrico y a combustión.',
-                style: AppStyles.h5(
+                information.aboutUs ?? 'Información no disponible',
+                style: AppStyles.h4(
                   color: AppColors.darkColor,
                   fontWeight: FontWeight.w400,
                 ),
@@ -49,8 +51,8 @@ class AboutUs extends StatelessWidget {
                 height: AppSize.defaultPadding * 0.5,
               ),
               Text(
-                'Manejando nuestros vehículos híbridos descubrirás el verdadero significado de la nueva tecnología híbrida eléctrica auto-recargable, un máximo rendimiento y menor consumo, gracias a la óptima combinación de su motor eléctrico y a combustión..',
-                style: AppStyles.h5(
+                information.mision ?? 'Misión no disponible',
+                style: AppStyles.h4(
                   color: AppColors.darkColor,
                   fontWeight: FontWeight.w400,
                 ),
@@ -70,8 +72,8 @@ class AboutUs extends StatelessWidget {
                 height: AppSize.defaultPadding * 0.5,
               ),
               Text(
-                'Manejando nuestros vehículos híbridos descubrirás el verdadero significado de la nueva tecnología híbrida eléctrica auto-recargable, un máximo rendimiento y menor consumo, gracias a la óptima combinación de su motor eléctrico y a combustión..',
-                style: AppStyles.h5(
+                information.vision ?? 'Visión no disponible',
+                style: AppStyles.h4(
                   color: AppColors.darkColor,
                   fontWeight: FontWeight.w400,
                 ),

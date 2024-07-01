@@ -20,7 +20,7 @@ class SocialMediaButton extends StatelessWidget {
           vertical: AppSize.defaultPadding),
       child: SizedBox(
         width: double.infinity,
-        height: 52.7.h,
+        height: 60.h,
         child: ElevatedButton.icon(
           style: ButtonStyle(
             backgroundColor:
@@ -33,7 +33,11 @@ class SocialMediaButton extends StatelessWidget {
             ),
           ),
           onPressed: onPressed,
-          icon: Image.asset(imgPath, width: 24.w, height: 24.h),
+          icon: Image.asset(
+            imgPath,
+            width: 24.w,
+            height: 24.h,
+          ),
           label: Text(
             text,
             style: AppStyles.h4(

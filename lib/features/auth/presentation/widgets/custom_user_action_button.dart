@@ -3,9 +3,11 @@ import 'package:tour_del_norte_app/utils/utils.dart';
 
 class CustomUserActionButton extends StatelessWidget {
   final String text;
+  final VoidCallback onPressed;
   const CustomUserActionButton({
     super.key,
     required this.text,
+    required this.onPressed,
   });
 
   @override
@@ -23,7 +25,7 @@ class CustomUserActionButton extends StatelessWidget {
             ),
           ),
         ),
-        onPressed: () {},
+        onPressed: onPressed,
         child: Text(
           text,
           style: AppStyles.h4(

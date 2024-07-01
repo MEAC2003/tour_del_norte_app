@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:tour_del_norte_app/core/config/app_router.dart';
+import 'package:tour_del_norte_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:tour_del_norte_app/features/shared/card_car.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
 
@@ -18,6 +22,13 @@ class _HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final isSignedIn = authProvider.isSignedIn;
+    final userName = authProvider.currentUser?.userMetadata?['full_name'] ?? '';
+    final greeting = isSignedIn && userName.isNotEmpty
+        ? 'Hey, ${userName.split(' ')[0]}!'
+        : 'Hey, bienvenido!';
+
     return SafeArea(
       child: Column(
         children: [
@@ -47,7 +58,7 @@ class _HomeView extends StatelessWidget {
                           height: AppSize.defaultPadding * 0.1,
                         ), // Espacio entre los textos
                         Text(
-                          'Hey, Antón!',
+                          greeting,
                           style: AppStyles.h3(
                             color: AppColors.darkColor,
                             fontWeight: FontWeight.w700,
@@ -57,10 +68,16 @@ class _HomeView extends StatelessWidget {
                     ),
                     Column(
                       children: [
-                        Image.asset(
-                          AppAssets.logo,
-                          fit: BoxFit.cover,
-                          width: 60.w,
+                        GestureDetector(
+                          onTap: () {
+                            // Navegar a otro apartado
+                            context.push(AppRouter.businessInformation);
+                          },
+                          child: Image.asset(
+                            AppAssets.logo,
+                            fit: BoxFit.cover,
+                            width: 60.w,
+                          ),
                         ),
                       ],
                     ),
@@ -87,7 +104,9 @@ class _HomeView extends StatelessWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        context.push(AppRouter.cars);
+                      },
                       child: Text(
                         'Ver más',
                         style: AppStyles.h4(
@@ -106,45 +125,57 @@ class _HomeView extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  const CardCar(
+                  CardCar(
                     carModel: 'SUV Toyota RAV4',
                     carDescription: 'Descripción corta sobre el auto',
                     carPassengers: '5',
                     carYear: '2020',
-                    carPrice: '1400',
+                    carPrice: '400',
                     carImage:
                         'https://res.cloudinary.com/dpngif7y4/image/upload/v1719551581/public/dkb7qiflt2qhcf5ccizd.png',
                     isAvailable: true,
+                    onTap: () {
+                      context.push(AppRouter.carDetails);
+                    },
                   ),
-                  const CardCar(
+                  CardCar(
                     carModel: 'SUV Toyota RAV4',
                     carDescription: 'Descripción corta sobre el auto',
                     carPassengers: '5',
                     carYear: '2020',
-                    carPrice: '1400',
+                    carPrice: '400',
                     carImage:
                         'https://res.cloudinary.com/dpngif7y4/image/upload/v1719551581/public/dkb7qiflt2qhcf5ccizd.png',
                     isAvailable: true,
+                    onTap: () {
+                      context.push(AppRouter.carDetails);
+                    },
                   ),
-                  const CardCar(
+                  CardCar(
                     carModel: 'SUV Toyota RAV4',
                     carDescription: 'Descripción corta sobre el auto',
                     carPassengers: '5',
                     carYear: '2020',
-                    carPrice: '1400',
+                    carPrice: '400',
                     carImage:
                         'https://res.cloudinary.com/dpngif7y4/image/upload/v1719551581/public/dkb7qiflt2qhcf5ccizd.png',
                     isAvailable: true,
+                    onTap: () {
+                      context.push(AppRouter.carDetails);
+                    },
                   ),
-                  const CardCar(
+                  CardCar(
                     carModel: 'SUV Toyota RAV4',
                     carDescription: 'Descripción corta sobre el auto',
                     carPassengers: '5',
                     carYear: '2020',
-                    carPrice: '1400',
+                    carPrice: '400',
                     carImage:
                         'https://res.cloudinary.com/dpngif7y4/image/upload/v1719551581/public/dkb7qiflt2qhcf5ccizd.png',
-                    isAvailable: false,
+                    isAvailable: true,
+                    onTap: () {
+                      context.push(AppRouter.carDetails);
+                    },
                   ),
                   SizedBox(height: AppSize.defaultPadding * 2.5)
                 ],

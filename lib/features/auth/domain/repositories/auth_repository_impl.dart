@@ -7,20 +7,26 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._authDataSource);
 
   @override
-  Future<bool> signInWithEmail(
+  Future<AuthResult> signInWithEmail(
       {required String email, required String password}) {
     return _authDataSource.signInWithEmail(email: email, password: password);
   }
 
   @override
-  Future<bool> signUpWithEmail(
-      {required String name, required String email, required String password}) {
+  Future<AuthResult> signUpWithEmail({
+    required String fullName,
+    required String email,
+    required String password,
+  }) {
     return _authDataSource.signUpWithEmail(
-        name: name, email: email, password: password);
+      fullName: fullName,
+      email: email,
+      password: password,
+    );
   }
 
   @override
-  Future<bool> signInWithGoogle() {
+  Future<AuthResult> signInWithGoogle() {
     return _authDataSource.signInWithGoogle();
   }
 
@@ -32,5 +38,10 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   bool isSignedIn() {
     return _authDataSource.isSignedIn();
+  }
+
+  @override
+  Future<void> resetPassword(String email) async {
+    await _authDataSource.resetPassword(email);
   }
 }

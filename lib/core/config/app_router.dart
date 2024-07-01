@@ -20,12 +20,13 @@ class AppRouter {
   static const String faq = '/faq';
   static const String reservation = '/reservation';
   static const String businessInformation = '/business-information';
+  static const String cars = '/cars';
   static const String prueba = '/prueba';
   static const String pruebS = '/pruebaS';
   static const String appRoot = '/app-root';
 
   static final router = GoRouter(
-    initialLocation: signIn,
+    initialLocation: home,
     routes: [
       ShellRoute(
         builder: (context, state, child) {
@@ -74,6 +75,7 @@ class AppRouter {
         path: businessInformation,
         builder: (context, state) => const BusinessInformationScreen(),
       ),
+      GoRoute(path: cars, builder: (context, state) => const CarsScreen()),
       GoRoute(
         path: appRoot,
         builder: (context, state) => const AppRoot(),

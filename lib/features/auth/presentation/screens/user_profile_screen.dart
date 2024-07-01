@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tour_del_norte_app/core/config/app_router.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/widgets/widgets.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
 
@@ -56,8 +58,11 @@ class _UserProfileView extends StatelessWidget {
           const ImageCard(
             imgPath: 'https://www.w3schools.com/w3images/avatar2.png',
           ),
-          const CustomUserActionButton(
+          CustomUserActionButton(
             text: 'Editar datos',
+            onPressed: () {
+              context.push(AppRouter.editProfile);
+            },
           ),
         ],
       ),
