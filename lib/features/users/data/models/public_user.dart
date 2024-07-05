@@ -12,7 +12,7 @@ String publicUserToJson(List<PublicUser> data) =>
 
 class PublicUser {
   String id;
-  String createdAt;
+  String? createdAt;
   String email;
   String fullName;
   String phone;
@@ -21,7 +21,7 @@ class PublicUser {
 
   PublicUser({
     required this.id,
-    required this.createdAt,
+    this.createdAt,
     required this.email,
     required this.fullName,
     required this.phone,

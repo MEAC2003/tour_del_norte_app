@@ -23,7 +23,7 @@ class _HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-    final isSignedIn = authProvider.isSignedIn;
+    final isSignedIn = authProvider.isAuthenticated;
     final userName = authProvider.currentUser?.userMetadata?['full_name'] ?? '';
     final greeting = isSignedIn && userName.isNotEmpty
         ? 'Hey, ${userName.split(' ')[0]}!'

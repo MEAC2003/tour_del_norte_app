@@ -11,21 +11,21 @@ String carToJson(List<Car> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Car {
-  final int id;
-  final String createdAt;
-  final String name;
-  final String shortOverview;
-  final int passengers;
-  final String mileage;
-  final int priceByDay;
-  final List<String> images;
-  final String fullOverview;
-  final bool isAvailable;
-  final int idCarModel;
-  final int doors;
-  final String type;
-  final String fuelType;
-  final String reservationDate;
+  int id;
+  String createdAt;
+  String name;
+  String shortOverview;
+  int passengers;
+  String mileage;
+  int priceByDay;
+  List<String> images;
+  String fullOverview;
+  bool isAvailable;
+  int idCarModel;
+  int doors;
+  String type;
+  String fuelType;
+  String year;
 
   Car({
     required this.id,
@@ -42,7 +42,7 @@ class Car {
     required this.doors,
     required this.type,
     required this.fuelType,
-    required this.reservationDate,
+    required this.year,
   });
 
   Car copyWith({
@@ -60,7 +60,7 @@ class Car {
     int? doors,
     String? type,
     String? fuelType,
-    String? reservationDate,
+    String? year,
   }) =>
       Car(
         id: id ?? this.id,
@@ -77,7 +77,7 @@ class Car {
         doors: doors ?? this.doors,
         type: type ?? this.type,
         fuelType: fuelType ?? this.fuelType,
-        reservationDate: reservationDate ?? this.reservationDate,
+        year: year ?? this.year,
       );
 
   factory Car.fromJson(Map<String, dynamic> json) => Car(
@@ -95,7 +95,7 @@ class Car {
         doors: json["doors"],
         type: json["type"],
         fuelType: json["fuel_type"],
-        reservationDate: json["reservation_date"],
+        year: json["year"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -113,6 +113,6 @@ class Car {
         "doors": doors,
         "type": type,
         "fuel_type": fuelType,
-        "reservation_date": reservationDate,
+        "year": year,
       };
 }

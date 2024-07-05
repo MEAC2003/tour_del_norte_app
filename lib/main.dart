@@ -11,6 +11,9 @@ import 'package:tour_del_norte_app/features/auth/presentation/providers/auth_pro
 import 'package:tour_del_norte_app/features/general_info/data/datasources/supabase_information_source.dart';
 import 'package:tour_del_norte_app/features/general_info/domain/repositories/information_repository_impl.dart';
 import 'package:tour_del_norte_app/features/general_info/presentation/providers/information_provider.dart';
+import 'package:tour_del_norte_app/features/users/data/datasources/supabase_users_data_source.dart';
+import 'package:tour_del_norte_app/features/users/domain/repositories/users_repository_impl.dart';
+import 'package:tour_del_norte_app/features/users/presentation/providers/users_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +36,16 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider(authRepository)),
+        ChangeNotifierProxyProvider<AuthProvider, UserProvider>(
+          create: (context) => UserProvider(
+            UsersRepositoryImpl(
+              SupabaseUsersDataSource(Supabase.instance.client),
+            ),
+            authProvider: Provider.of<AuthProvider>(context, listen: false),
+          ),
+          update: (context, authProvider, previousUserProvider) =>
+              previousUserProvider!..updateAuthProvider(authProvider),
+        ),
         ChangeNotifierProvider(
             create: (_) => InformationProvider(informationRepository)),
       ],
@@ -47,7 +60,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(375, 812), // Ajuste esto según su diseño
+      designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) => MaterialApp.router(

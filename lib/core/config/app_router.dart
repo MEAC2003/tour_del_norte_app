@@ -1,6 +1,5 @@
 import 'package:go_router/go_router.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/screens/screen.dart';
-import 'package:tour_del_norte_app/features/auth/prueba.dart';
 import 'package:tour_del_norte_app/features/general_info/presentation/screens/screens.dart';
 import 'package:tour_del_norte_app/features/home/presentation/screens/screens.dart';
 import 'package:tour_del_norte_app/features/root/screen/app_root.dart';
@@ -83,10 +82,6 @@ class AppRouter {
       GoRoute(
         path: prueba,
         builder: (context, state) => const PruebasScreen(),
-      ),
-      GoRoute(
-        path: pruebS,
-        builder: (context, state) => const SINGINScreen(),
       ),
     ],
   );

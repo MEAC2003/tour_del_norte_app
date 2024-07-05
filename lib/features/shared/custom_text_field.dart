@@ -6,17 +6,19 @@ import 'package:tour_del_norte_app/utils/app_styles.dart';
 class CustomTextField extends StatelessWidget {
   final Icon icon;
   final String hintText;
-  final bool obscureText;
+  final bool? obscureText;
   final TextEditingController? controller;
-  final String? Function(String?)? validator; // Añade esta línea
+  final String? Function(String?)? validator;
+  final bool readOnly;
 
   const CustomTextField({
     super.key,
     required this.hintText,
-    required this.obscureText,
+    this.obscureText,
     required this.icon,
     this.controller,
-    this.validator, // Añade esta línea
+    this.validator,
+    this.readOnly = false,
   });
 
   @override
@@ -54,13 +56,14 @@ class CustomTextField extends StatelessWidget {
                       style: AppStyles.h4(
                         fontWeight: FontWeight.w600,
                       ),
-                      obscureText: obscureText,
+                      obscureText: obscureText ?? false,
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(
                             borderSide: BorderSide.none),
                         hintText: hintText,
                       ),
-                      validator: validator, // Añade esta línea
+                      validator: validator,
+                      readOnly: readOnly, // Añade esta línea
                     ),
                   ),
                 ),

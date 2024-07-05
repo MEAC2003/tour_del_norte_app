@@ -14,6 +14,9 @@ class AuthProvider with ChangeNotifier {
   }
 
   User? get currentUser => _currentUser;
+  bool get isLoading => _isLoading;
+  String? get errorMessage => _errorMessage;
+  bool get isAuthenticated => _currentUser != null;
 
   Future<void> _initializeSession() async {
     _currentUser = Supabase.instance.client.auth.currentUser;
@@ -24,10 +27,6 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     });
   }
-
-  bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage;
-  bool get isSignedIn => _authRepository.isSignedIn();
 
   void _handleAuthResult(AuthResult result) {
     if (result.success) {
@@ -123,5 +122,11 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       return false;
     }
+  }
+
+  // Nuevo método para verificar el estado de autenticación
+  Future<void> checkAuthStatus() async {
+    _currentUser = Supabase.instance.client.auth.currentUser;
+    notifyListeners();
   }
 }

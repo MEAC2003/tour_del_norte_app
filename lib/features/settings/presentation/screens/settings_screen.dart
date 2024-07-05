@@ -56,7 +56,7 @@ class _SettingsView extends StatelessWidget {
               SizedBox(height: AppSize.defaultPadding / 1.5),
               Consumer<AuthProvider>(
                 builder: (context, authProvider, child) {
-                  final bool isSignedIn = authProvider.isSignedIn;
+                  final bool isSignedIn = authProvider.isAuthenticated;
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
                     title: Text(
