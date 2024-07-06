@@ -11,19 +11,27 @@ class SupabaseCarDataSourceImpl implements CarDataSource {
 
   @override
   Future<List<Car>> getCars() async {
-    final response = await _supabase.from('car').select();
-    print('getCars');
-    print(response);
-    return [];
-    // final cars = response.
-    // return cars.map((car) => Car.fromJson(car)).toList();
+    try {
+      final response = await _supabase.from('car').select();
+
+      final List<dynamic> data = response as List<dynamic>;
+      return data.map((json) => Car.fromJson(json)).toList();
+    } catch (e) {
+      print('Error fetching cars: $e');
+      rethrow;
+    }
   }
 
   @override
   Future<Car> getCarById({required int id}) async {
-    final response = await _supabase.from('car').select().eq('id', id).single();
-    print('getCarById');
-    print(response);
-    return Car.fromJson(response);
+    try {
+      final response =
+          await _supabase.from('car').select().eq('id', id).single();
+
+      return Car.fromJson(response);
+    } catch (e) {
+      print('Error fetching car by id: $e');
+      rethrow;
+    }
   }
 }

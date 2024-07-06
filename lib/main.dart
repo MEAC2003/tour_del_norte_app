@@ -11,6 +11,9 @@ import 'package:tour_del_norte_app/features/auth/presentation/providers/auth_pro
 import 'package:tour_del_norte_app/features/general_info/data/datasources/supabase_information_source.dart';
 import 'package:tour_del_norte_app/features/general_info/domain/repositories/information_repository_impl.dart';
 import 'package:tour_del_norte_app/features/general_info/presentation/providers/information_provider.dart';
+import 'package:tour_del_norte_app/features/home/data/datasources/supabase_car_data_source.dart';
+import 'package:tour_del_norte_app/features/home/domain/repositories/car_repository_impl.dart';
+import 'package:tour_del_norte_app/features/home/presentation/providers/car_provider.dart';
 import 'package:tour_del_norte_app/features/users/data/datasources/supabase_users_data_source.dart';
 import 'package:tour_del_norte_app/features/users/domain/repositories/users_repository_impl.dart';
 import 'package:tour_del_norte_app/features/users/presentation/providers/users_provider.dart';
@@ -31,6 +34,8 @@ void main() async {
   final informationDataSource = SupabaseInformationDataSourceImpl();
   final informationRepository =
       InformationRepositoryImpl(informationDataSource);
+  final carDataSource = SupabaseCarDataSourceImpl();
+  final carRepository = CarRepositoryImpl(carDataSource);
 
   runApp(
     MultiProvider(
@@ -48,6 +53,7 @@ void main() async {
         ),
         ChangeNotifierProvider(
             create: (_) => InformationProvider(informationRepository)),
+        ChangeNotifierProvider(create: (_) => CarProvider(carRepository)),
       ],
       child: const MyApp(),
     ),

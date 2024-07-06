@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tour_del_norte_app/core/config/app_router.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/providers/auth_provider.dart';
+import 'package:tour_del_norte_app/features/home/presentation/providers/car_provider.dart';
 import 'package:tour_del_norte_app/features/shared/card_car.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
 
@@ -17,8 +18,23 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _HomeView extends StatelessWidget {
+class _HomeView extends StatefulWidget {
   const _HomeView();
+
+  @override
+  _HomeViewState createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<_HomeView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<CarProvider>().loadCars();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,62 +139,39 @@ class _HomeView extends StatelessWidget {
           SizedBox(
             height: 0.72.sh,
             child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  CardCar(
-                    carModel: 'SUV Toyota RAV4',
-                    carDescription: 'Descripción corta sobre el auto',
-                    carPassengers: '5',
-                    carYear: '2020',
-                    carPrice: '400',
-                    carImage:
-                        'https://res.cloudinary.com/dpngif7y4/image/upload/v1719551581/public/dkb7qiflt2qhcf5ccizd.png',
-                    isAvailable: true,
-                    onTap: () {
-                      context.push(AppRouter.carDetails);
-                    },
-                  ),
-                  CardCar(
-                    carModel: 'SUV Toyota RAV4',
-                    carDescription: 'Descripción corta sobre el auto',
-                    carPassengers: '5',
-                    carYear: '2020',
-                    carPrice: '400',
-                    carImage:
-                        'https://res.cloudinary.com/dpngif7y4/image/upload/v1719551581/public/dkb7qiflt2qhcf5ccizd.png',
-                    isAvailable: true,
-                    onTap: () {
-                      context.push(AppRouter.carDetails);
-                    },
-                  ),
-                  CardCar(
-                    carModel: 'SUV Toyota RAV4',
-                    carDescription: 'Descripción corta sobre el auto',
-                    carPassengers: '5',
-                    carYear: '2020',
-                    carPrice: '400',
-                    carImage:
-                        'https://res.cloudinary.com/dpngif7y4/image/upload/v1719551581/public/dkb7qiflt2qhcf5ccizd.png',
-                    isAvailable: true,
-                    onTap: () {
-                      context.push(AppRouter.carDetails);
-                    },
-                  ),
-                  CardCar(
-                    carModel: 'SUV Toyota RAV4',
-                    carDescription: 'Descripción corta sobre el auto',
-                    carPassengers: '5',
-                    carYear: '2020',
-                    carPrice: '400',
-                    carImage:
-                        'https://res.cloudinary.com/dpngif7y4/image/upload/v1719551581/public/dkb7qiflt2qhcf5ccizd.png',
-                    isAvailable: true,
-                    onTap: () {
-                      context.push(AppRouter.carDetails);
-                    },
-                  ),
-                  SizedBox(height: AppSize.defaultPadding * 2.5)
-                ],
+              child: Consumer<CarProvider>(
+                builder: (context, carProvider, child) {
+                  if (carProvider.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (carProvider.cars.isEmpty) {
+                    return const Center(
+                        child: Text('No hay coches disponibles.'));
+                  }
+
+                  // Limitar a mostrar solo los primeros 4 coches, o menos si hay menos de 4
+                  final displayCars = carProvider.cars.take(4).toList();
+
+                  return Column(
+                    children: [
+                      ...displayCars.map((car) => CardCar(
+                            carModel: car.name,
+                            carDescription: car.shortOverview,
+                            carPassengers: car.passengers.toString(),
+                            carYear: car.year,
+                            carPrice: car.priceByDay.toString(),
+                            carImage:
+                                car.images.isNotEmpty ? car.images[0] : '',
+                            isAvailable: car.isAvailable,
+                            onTap: () {
+                              context.push(AppRouter.carDetails, extra: car.id);
+                            },
+                          )),
+                      SizedBox(height: AppSize.defaultPadding * 2.5)
+                    ],
+                  );
+                },
               ),
             ),
           ),

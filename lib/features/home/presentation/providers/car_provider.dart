@@ -1,30 +1,32 @@
-// providers/car_provider.dart
-
 import 'package:flutter/material.dart';
 import 'package:tour_del_norte_app/features/home/data/models/car.dart';
 import 'package:tour_del_norte_app/features/home/domain/repositories/car_repository.dart';
 
-class CarProvider with ChangeNotifier {
-  final CarRepository carRepository;
-  List<Car> cars = [];
-  Car? selectedCar;
-  bool isLoading = false;
+class CarProvider extends ChangeNotifier {
+  final CarRepository _carRepository;
+  List<Car> _cars = [];
+  bool _isLoading = false;
 
-  CarProvider(this.carRepository);
+  CarProvider(this._carRepository);
 
-  Future<void> fetchCars() async {
-    isLoading = true;
+  List<Car> get cars => _cars;
+  bool get isLoading => _isLoading;
+
+  Future<void> loadCars() async {
+    _isLoading = true;
     notifyListeners();
-    cars = await carRepository.getCars();
-    isLoading = false;
+
+    try {
+      _cars = await _carRepository.getCars();
+    } catch (e) {
+      print(e);
+    }
+
+    _isLoading = false;
     notifyListeners();
   }
 
-  Future<void> fetchCarById(int id) async {
-    isLoading = true;
-    notifyListeners();
-    selectedCar = await carRepository.getCarById(id: id);
-    isLoading = false;
-    notifyListeners();
+  Car? getCarById(int id) {
+    return _cars.firstWhere((car) => car.id == id);
   }
 }

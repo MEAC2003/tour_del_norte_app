@@ -48,7 +48,8 @@ class AppRouter {
       ),
       GoRoute(
         path: carDetails,
-        builder: (context, state) => const CarDetailsScreen(),
+        builder: (context, state) =>
+            CarDetailsScreen(carId: state.extra as int),
       ),
       GoRoute(
         path: signIn,
