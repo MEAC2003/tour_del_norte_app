@@ -1,11 +1,11 @@
+// edit_profile_screen.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/widgets/widgets.dart';
 import 'package:tour_del_norte_app/features/shared/shared.dart';
 import 'package:tour_del_norte_app/features/users/presentation/providers/users_provider.dart';
+import 'package:tour_del_norte_app/services/cloudinary_service.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -16,12 +16,12 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  final ImagePicker _picker = ImagePicker();
   String? _imageUrl;
   late TextEditingController _fullNameController;
   late final String _email;
   late TextEditingController _phoneController;
   late TextEditingController _dniController;
+  final CloudinaryService _cloudinaryService = CloudinaryService();
 
   @override
   void initState() {
@@ -44,20 +44,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _pickImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      final cloudinary =
-          CloudinaryPublic('dpngif7y4', 'TourNorte', cache: false);
-      try {
-        CloudinaryResponse response = await cloudinary.uploadFile(
-          CloudinaryFile.fromFile(image.path, folder: 'brevetes'),
-        );
-        setState(() {
-          _imageUrl = response.secureUrl;
-        });
-      } catch (e) {
-        print(e);
-      }
+    final url = await _cloudinaryService.uploadImage();
+    if (url != null) {
+      setState(() {
+        _imageUrl = url;
+      });
     }
   }
 

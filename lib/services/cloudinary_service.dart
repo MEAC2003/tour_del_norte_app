@@ -1,19 +1,25 @@
-// lib/services/cloudinary_service.dart
+// cloudinary_service.dart
 import 'package:cloudinary_public/cloudinary_public.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CloudinaryService {
-  final cloudinary = CloudinaryPublic('dpngif7y4', 'TourNorte', cache: false);
+  final CloudinaryPublic cloudinary =
+      CloudinaryPublic('dpngif7y4', 'TourNorte', cache: false);
+  final ImagePicker _picker = ImagePicker();
 
-  Future<String> uploadImage(String imagePath) async {
-    try {
-      CloudinaryResponse response = await cloudinary.uploadFile(
-        CloudinaryFile.fromFile(imagePath,
-            resourceType: CloudinaryResourceType.Image),
-      );
-      return response.secureUrl;
-    } catch (e) {
-      print(e);
-      return '';
+  Future<String?> uploadImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      try {
+        CloudinaryResponse response = await cloudinary.uploadFile(
+          CloudinaryFile.fromFile(image.path, folder: 'brevetes'),
+        );
+        return response.secureUrl;
+      } catch (e) {
+        print(e);
+        return null;
+      }
     }
+    return null;
   }
 }

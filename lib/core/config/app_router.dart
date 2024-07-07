@@ -5,8 +5,6 @@ import 'package:tour_del_norte_app/features/home/presentation/screens/screens.da
 import 'package:tour_del_norte_app/features/root/screen/app_root.dart';
 import 'package:tour_del_norte_app/features/settings/presentation/screens/screens.dart';
 import 'package:tour_del_norte_app/features/shared/shared.dart';
-//import de prueba
-import 'package:tour_del_norte_app/prueba.dart';
 
 class AppRouter {
   static const String home = '/';
@@ -68,8 +66,10 @@ class AppRouter {
         builder: (context, state) => const FAQScreen(),
       ),
       GoRoute(
-        path: reservation,
-        builder: (context, state) => const ReservationScreen(),
+        path: '/reservation/:carId',
+        builder: (context, state) => ReservationScreen(
+          carId: int.parse(state.pathParameters['carId']!),
+        ),
       ),
       GoRoute(
         path: businessInformation,
@@ -79,11 +79,7 @@ class AppRouter {
       GoRoute(
         path: appRoot,
         builder: (context, state) => const AppRoot(),
-      ),
-      GoRoute(
-        path: prueba,
-        builder: (context, state) => const PruebasScreen(),
-      ),
+      )
     ],
   );
 }

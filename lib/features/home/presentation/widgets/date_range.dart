@@ -3,23 +3,34 @@ import 'package:tour_del_norte_app/utils/utils.dart';
 import 'package:tour_del_norte_app/features/home/presentation/widgets/widgets.dart';
 
 class DateRange extends StatefulWidget {
-  const DateRange({super.key});
+  final DateTime initialStartDate;
+  final DateTime initialEndDate;
+  final Function(DateTime, DateTime) onDateTimeRangeSelected;
+
+  const DateRange({
+    super.key,
+    required this.initialStartDate,
+    required this.initialEndDate,
+    required this.onDateTimeRangeSelected,
+  });
 
   @override
   State<DateRange> createState() => _DateRangeState();
 }
 
 class _DateRangeState extends State<DateRange> {
-  DateTimeRange dateRange = DateTimeRange(
-    start: DateTime.now(),
-    end: DateTime.now(),
-  );
+  late DateTime startDateTime;
+  late DateTime endDateTime;
+
+  @override
+  void initState() {
+    super.initState();
+    startDateTime = widget.initialStartDate;
+    endDateTime = widget.initialEndDate;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final start = dateRange.start;
-    final end = dateRange.end;
-
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: AppSize.defaultPaddingHorizontal * 1.5,
@@ -29,7 +40,7 @@ class _DateRangeState extends State<DateRange> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Rango de fechas:',
+            'Rango de fechas y horas:',
             style: AppStyles.h3(
               color: AppColors.darkColor,
               fontWeight: FontWeight.w600,
@@ -40,15 +51,15 @@ class _DateRangeState extends State<DateRange> {
             children: [
               Expanded(
                 child: CustomElevatedButton(
-                  onPressed: pickDataRange,
-                  text: '${start.year}/${start.month}/${start.day}',
+                  onPressed: () => pickDateTime(isStart: true),
+                  text: _formatDateTime(startDateTime),
                 ),
               ),
               SizedBox(width: AppSize.defaultPadding),
               Expanded(
                 child: CustomElevatedButton(
-                  onPressed: pickDataRange,
-                  text: '${end.year}/${end.month}/${end.day}',
+                  onPressed: () => pickDateTime(isStart: false),
+                  text: _formatDateTime(endDateTime),
                 ),
               ),
             ],
@@ -58,15 +69,49 @@ class _DateRangeState extends State<DateRange> {
     );
   }
 
-  Future<void> pickDataRange() async {
-    DateTimeRange? newDateRange = await showDateRangePicker(
+  String _formatDateTime(DateTime dateTime) {
+    return '${dateTime.year}/${dateTime.month}/${dateTime.day} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
+  }
+
+  Future<void> pickDateTime({required bool isStart}) async {
+    DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDateRange: dateRange,
+      initialDate: isStart ? startDateTime : endDateTime,
       firstDate: DateTime.now(),
       lastDate: DateTime(3000),
     );
 
-    if (newDateRange == null) return;
-    setState(() => dateRange = newDateRange);
+    if (pickedDate != null) {
+      TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime:
+            TimeOfDay.fromDateTime(isStart ? startDateTime : endDateTime),
+      );
+
+      if (pickedTime != null) {
+        setState(() {
+          if (isStart) {
+            startDateTime = DateTime(
+              pickedDate.year,
+              pickedDate.month,
+              pickedDate.day,
+              pickedTime.hour,
+              pickedTime.minute,
+            );
+            // Set end time to the same as start time
+            endDateTime = startDateTime;
+          } else {
+            endDateTime = DateTime(
+              pickedDate.year,
+              pickedDate.month,
+              pickedDate.day,
+              pickedTime.hour,
+              pickedTime.minute,
+            );
+          }
+        });
+        widget.onDateTimeRangeSelected(startDateTime, endDateTime);
+      }
+    }
   }
 }

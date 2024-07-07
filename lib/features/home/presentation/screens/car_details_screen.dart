@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:tour_del_norte_app/core/config/app_router.dart';
+import 'package:tour_del_norte_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:tour_del_norte_app/features/home/presentation/providers/car_provider.dart';
 import 'package:tour_del_norte_app/features/shared/shared.dart';
+import 'package:tour_del_norte_app/features/users/presentation/providers/users_provider.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
 
 class CarDetailsScreen extends StatelessWidget {
@@ -43,6 +45,8 @@ class _CarDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     return Consumer<CarProvider>(
       builder: (context, carProvider, child) {
         final car = carProvider.getCarById(carId);
@@ -125,10 +129,41 @@ class _CarDetailsView extends StatelessWidget {
                     ),
                     SizedBox(height: AppSize.defaultPadding),
                     CustomCTAButton(
-                        text: 'Reservar',
-                        onPressed: () {
-                          context.push(AppRouter.reservation);
-                        }),
+                      text: 'Reservar',
+                      onPressed: () {
+                        print('Auth status: ${authProvider.isAuthenticated}');
+                        print('User data: ${userProvider.user}');
+
+                        if (authProvider.isAuthenticated) {
+                          if (userProvider.user != null) {
+                            print('Navigating to ReservationScreen');
+                            context.push('${AppRouter.reservation}/${car.id}');
+                          } else {
+                            print('User authenticated but data not loaded');
+                            userProvider.getCurrentUser().then((_) {
+                              if (userProvider.user != null) {
+                                context
+                                    .push('${AppRouter.reservation}/${car.id}');
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'No se pudo cargar la información del usuario')),
+                                );
+                              }
+                            });
+                          }
+                        } else {
+                          print('User not authenticated');
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    'Por favor, inicie sesión para hacer una reserva')),
+                          );
+                          context.push(AppRouter.signIn);
+                        }
+                      },
+                    ),
                     SizedBox(height: AppSize.defaultPadding * 0.5),
                     Text(
                       'Precio por día: S/ ${car.priceByDay}',
