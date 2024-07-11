@@ -11,4 +11,9 @@ class BookingRepositoryImpl implements BookingRepository {
   Future<void> createBooking(Booking booking) async {
     await _bookingDataSource.createBooking(booking);
   }
+
+  @override
+  Future<List<Booking>> getUserBookings() async {
+    return await _bookingDataSource.getUserBookings();
+  }
 }

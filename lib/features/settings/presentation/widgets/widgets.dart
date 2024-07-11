@@ -1,3 +1,3 @@
 export 'switch_themes.dart';
 export 'options_language.dart';
-export 'faq_expansion.dart';
+export 'custom_expansion.dart';

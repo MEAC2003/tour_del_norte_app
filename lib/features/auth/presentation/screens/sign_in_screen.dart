@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tour_del_norte_app/core/config/app_router.dart';
-import 'package:tour_del_norte_app/features/auth/data/datasources/supabase_auth_data_source.dart';
+import 'package:tour_del_norte_app/features/auth/domain/enums/user_role.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/widgets/widgets.dart';
 import 'package:tour_del_norte_app/features/shared/shared.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
@@ -29,6 +29,7 @@ class _SignInView extends StatefulWidget {
 class _SignInViewState extends State<_SignInView> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -37,17 +38,31 @@ class _SignInViewState extends State<_SignInView> {
     super.dispose();
   }
 
-  void _handleAuthResult(BuildContext context, AuthResult result) {
+  Future<void> _handleSignIn(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final authProvider = context.read<AuthProvider>();
+    final result = await authProvider.signInWithEmail(
+      _emailController.text,
+      _passwordController.text,
+    );
+
+    setState(() {
+      _isLoading = false;
+    });
+
     if (result.success) {
-      context.go(AppRouter.home);
+      await authProvider.initializeUser();
+      if (authProvider.hasRole(UserRole.admin.toString().split('.').last)) {
+        context.go(AppRouter.adminDashboard);
+      } else {
+        context.go(AppRouter.home);
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.read<AuthProvider>().errorMessage ??
-                'Error de autenticación',
-          ),
-        ),
+        SnackBar(content: Text(result.error ?? 'Error de autenticación')),
       );
     }
   }
@@ -63,7 +78,6 @@ class _SignInViewState extends State<_SignInView> {
           );
           return;
         }
-
         final success = await context.read<AuthProvider>().resetPassword(email);
         if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -84,7 +98,6 @@ class _SignInViewState extends State<_SignInView> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
@@ -135,21 +148,29 @@ class _SignInViewState extends State<_SignInView> {
             SizedBox(height: AppSize.defaultPadding),
             CustomCTAButton(
               text: 'Iniciar sesión',
-              onPressed: () async {
-                final result = await authProvider.signInWithEmail(
-                  _emailController.text,
-                  _passwordController.text,
-                );
-                _handleAuthResult(context, result);
-              },
+              onPressed: () => _handleSignIn(context),
             ),
             const OrAccess(),
             SocialMediaButton(
               imgPath: AppAssets.googleIcon,
               text: ' Iniciar sesión con Google',
               onPressed: () async {
+                final authProvider = context.read<AuthProvider>();
                 final result = await authProvider.signInWithGoogle();
-                _handleAuthResult(context, result);
+                if (result.success) {
+                  if (authProvider
+                      .hasRole(UserRole.admin.toString().split('.').last)) {
+                    context.go(AppRouter.adminDashboard);
+                  } else {
+                    context.go(AppRouter.home);
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text(result.error ??
+                            'Error de autenticación con Google')),
+                  );
+                }
               },
             ),
             Padding(
@@ -177,6 +198,13 @@ class _SignInViewState extends State<_SignInView> {
                 ],
               ),
             ),
+            if (_isLoading)
+              Container(
+                color: Colors.black54,
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
           ],
         ),
       ),

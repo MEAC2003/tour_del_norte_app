@@ -46,112 +46,116 @@ class _HomeViewState extends State<_HomeView> {
         : 'Hey, bienvenido!';
 
     return SafeArea(
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSize.defaultPadding,
-            ),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: AppSize.defaultPadding,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Tour del Norte',
-                          style: AppStyles.h3(
-                            color: AppColors.darkColor,
-                            fontWeight: FontWeight.w500,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSize.defaultPadding,
+              ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: AppSize.defaultPadding,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Tour del Norte',
+                            style: AppStyles.h3(
+                              color: AppColors.darkColor,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
+                          SizedBox(
+                            height: AppSize.defaultPadding * 0.1,
+                          ), // Espacio entre los textos
+                          Text(
+                            greeting,
+                            style: AppStyles.h3(
+                              color: AppColors.darkColor,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              // Navegar a otro apartado
+                              context.push(AppRouter.businessInformation);
+                            },
+                            child: Image.asset(
+                              AppAssets.logo,
+                              fit: BoxFit.cover,
+                              width: 60.w,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: AppSize.defaultPadding * 0.5,
+                  ),
+                  Divider(
+                    color: AppColors.darkColor50,
+                    thickness: 0.25.h,
+                  ),
+                  SizedBox(
+                    height: AppSize.defaultPadding * 0.5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Nuestros Autos',
+                        style: AppStyles.h4(
+                          color: AppColors.darkColor,
+                          fontWeight: FontWeight.w500,
                         ),
-                        SizedBox(
-                          height: AppSize.defaultPadding * 0.1,
-                        ), // Espacio entre los textos
-                        Text(
-                          greeting,
-                          style: AppStyles.h3(
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          context.push(AppRouter.cars);
+                        },
+                        child: Text(
+                          'Ver más',
+                          style: AppStyles.h4(
                             color: AppColors.darkColor,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            // Navegar a otro apartado
-                            context.push(AppRouter.businessInformation);
-                          },
-                          child: Image.asset(
-                            AppAssets.logo,
-                            fit: BoxFit.cover,
-                            width: 60.w,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: AppSize.defaultPadding * 0.5,
-                ),
-                Divider(
-                  color: AppColors.darkColor50,
-                  thickness: 0.25.h,
-                ),
-                SizedBox(
-                  height: AppSize.defaultPadding * 0.5,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Nuestros Autos',
-                      style: AppStyles.h4(
-                        color: AppColors.darkColor,
-                        fontWeight: FontWeight.w500,
                       ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        context.push(AppRouter.cars);
-                      },
-                      child: Text(
-                        'Ver más',
-                        style: AppStyles.h4(
-                          color: AppColors.darkColor,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(
-            height: 0.72.sh,
-            child: SingleChildScrollView(
-              child: Consumer<CarProvider>(
+            SizedBox(
+              height: 0.72.sh,
+              child: SingleChildScrollView(child: Consumer<CarProvider>(
                 builder: (context, carProvider, child) {
                   if (carProvider.isLoading) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
-                  if (carProvider.cars.isEmpty) {
+                  // Filtra los coches disponibles
+                  final availableCars =
+                      carProvider.cars.where((car) => car.isAvailable).toList();
+
+                  if (availableCars.isEmpty) {
                     return const Center(
                         child: Text('No hay coches disponibles.'));
                   }
 
-                  // Limitar a mostrar solo los primeros 4 coches, o menos si hay menos de 4
-                  final displayCars = carProvider.cars.take(4).toList();
+                  // Limita a mostrar solo los primeros 4 coches disponibles, o menos si hay menos de 4
+                  final displayCars = availableCars.take(4).toList();
 
                   return Column(
                     children: [
@@ -172,10 +176,10 @@ class _HomeViewState extends State<_HomeView> {
                     ],
                   );
                 },
-              ),
+              )),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

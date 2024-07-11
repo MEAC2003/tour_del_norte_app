@@ -4,6 +4,7 @@ import 'package:tour_del_norte_app/features/home/presentation/widgets/widgets.da
 
 class DateRange extends StatefulWidget {
   final DateTime initialStartDate;
+  final List<DateTime> disabledDates;
   final DateTime initialEndDate;
   final Function(DateTime, DateTime) onDateTimeRangeSelected;
 
@@ -12,6 +13,7 @@ class DateRange extends StatefulWidget {
     required this.initialStartDate,
     required this.initialEndDate,
     required this.onDateTimeRangeSelected,
+    required this.disabledDates,
   });
 
   @override
@@ -74,44 +76,63 @@ class _DateRangeState extends State<DateRange> {
   }
 
   Future<void> pickDateTime({required bool isStart}) async {
+    DateTime initialDate = isStart ? startDateTime : endDateTime;
+
+    // Encuentra la próxima fecha disponible si la inicial está inhabilitada
+    while (widget.disabledDates.any((disabledDate) =>
+        initialDate.year == disabledDate.year &&
+        initialDate.month == disabledDate.month &&
+        initialDate.day == disabledDate.day)) {
+      initialDate = initialDate.add(const Duration(days: 1));
+    }
+
     DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: isStart ? startDateTime : endDateTime,
+      initialDate: initialDate,
       firstDate: DateTime.now(),
       lastDate: DateTime(3000),
+      selectableDayPredicate: (DateTime date) {
+        return !widget.disabledDates.any((disabledDate) =>
+            date.year == disabledDate.year &&
+            date.month == disabledDate.month &&
+            date.day == disabledDate.day);
+      },
     );
 
     if (pickedDate != null) {
-      TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime:
-            TimeOfDay.fromDateTime(isStart ? startDateTime : endDateTime),
-      );
-
-      if (pickedTime != null) {
-        setState(() {
-          if (isStart) {
-            startDateTime = DateTime(
-              pickedDate.year,
-              pickedDate.month,
-              pickedDate.day,
-              pickedTime.hour,
-              pickedTime.minute,
-            );
-            // Set end time to the same as start time
-            endDateTime = startDateTime;
-          } else {
-            endDateTime = DateTime(
-              pickedDate.year,
-              pickedDate.month,
-              pickedDate.day,
-              pickedTime.hour,
-              pickedTime.minute,
-            );
-          }
-        });
-        widget.onDateTimeRangeSelected(startDateTime, endDateTime);
+      TimeOfDay? pickedTime;
+      if (isStart) {
+        pickedTime = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay.fromDateTime(startDateTime),
+        );
       }
+
+      setState(() {
+        if (isStart) {
+          startDateTime = pickedTime != null
+              ? DateTime(
+                  pickedDate.year,
+                  pickedDate.month,
+                  pickedDate.day,
+                  pickedTime.hour,
+                  pickedTime.minute,
+                )
+              : DateTime(pickedDate.year, pickedDate.month, pickedDate.day);
+          // Set end date to the next day at the same time
+          endDateTime = startDateTime.add(const Duration(days: 1));
+        } else {
+          // For end date, only allow changing the date, not the time
+          endDateTime = DateTime(
+            pickedDate.year,
+            pickedDate.month,
+            pickedDate.day,
+            startDateTime.hour,
+            startDateTime.minute,
+          );
+        }
+      });
+      widget.onDateTimeRangeSelected(startDateTime, endDateTime);
     }
   }
 }

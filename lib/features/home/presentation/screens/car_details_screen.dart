@@ -131,15 +131,10 @@ class _CarDetailsView extends StatelessWidget {
                     CustomCTAButton(
                       text: 'Reservar',
                       onPressed: () {
-                        print('Auth status: ${authProvider.isAuthenticated}');
-                        print('User data: ${userProvider.user}');
-
                         if (authProvider.isAuthenticated) {
                           if (userProvider.user != null) {
-                            print('Navigating to ReservationScreen');
                             context.push('${AppRouter.reservation}/${car.id}');
                           } else {
-                            print('User authenticated but data not loaded');
                             userProvider.getCurrentUser().then((_) {
                               if (userProvider.user != null) {
                                 context
@@ -154,7 +149,6 @@ class _CarDetailsView extends StatelessWidget {
                             });
                           }
                         } else {
-                          print('User not authenticated');
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                                 content: Text(

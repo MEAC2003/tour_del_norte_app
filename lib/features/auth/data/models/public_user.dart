@@ -18,6 +18,7 @@ class PublicUser {
   String phone;
   String dni;
   List<String>? license;
+  String role;
 
   PublicUser({
     required this.id,
@@ -27,6 +28,7 @@ class PublicUser {
     required this.phone,
     required this.dni,
     required this.license,
+    required this.role,
   });
 
   PublicUser copyWith({
@@ -37,6 +39,7 @@ class PublicUser {
     String? phone,
     String? dni,
     List<String>? license,
+    String? role,
   }) =>
       PublicUser(
         id: id ?? this.id,
@@ -46,6 +49,7 @@ class PublicUser {
         phone: phone ?? this.phone,
         dni: dni ?? this.dni,
         license: license ?? this.license,
+        role: role ?? this.role,
       );
 
   factory PublicUser.fromJson(Map<String, dynamic> json) => PublicUser(
@@ -58,6 +62,7 @@ class PublicUser {
         license: json["license"] == null
             ? []
             : List<String>.from(json["license"]!.map((x) => x)),
+        role: json["role"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -69,5 +74,6 @@ class PublicUser {
         "dni": dni,
         "license":
             license == null ? [] : List<dynamic>.from(license!.map((x) => x)),
+        "role": role,
       };
 }

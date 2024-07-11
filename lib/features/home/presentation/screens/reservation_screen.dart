@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:tour_del_norte_app/features/home/data/models/booking.dart';
 import 'package:tour_del_norte_app/features/home/data/models/car.dart';
 import 'package:tour_del_norte_app/features/home/presentation/providers/booking_provider.dart';
@@ -10,7 +12,6 @@ import 'package:tour_del_norte_app/features/shared/shared.dart';
 import 'package:tour_del_norte_app/features/users/presentation/providers/users_provider.dart';
 import 'package:tour_del_norte_app/services/cloudinary_service.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
-import 'package:flutter/scheduler.dart';
 
 class ReservationScreen extends StatefulWidget {
   final int carId;
@@ -22,7 +23,9 @@ class ReservationScreen extends StatefulWidget {
 }
 
 class _ReservationScreenState extends State<ReservationScreen> {
+  // ignore: unused_field
   String? _imageUrl;
+  List<DateTime> _disabledDates = [];
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _fullNameController;
   late TextEditingController _emailController;
@@ -40,6 +43,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
   @override
   void initState() {
     super.initState();
+    _loadDisabledDates();
     _fullNameController = TextEditingController();
     _emailController = TextEditingController();
     _phoneController = TextEditingController();
@@ -56,17 +60,11 @@ class _ReservationScreenState extends State<ReservationScreen> {
   }
 
   void _initializeUserData() {
-    print('Initializing user data in ReservationScreen');
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    print('UserProvider: $userProvider');
-    print('Is loading: ${userProvider.isLoading}');
-    print('Error: ${userProvider.error}');
 
     final user = userProvider.user;
-    print('User: ${user?.toJson()}');
 
     if (user == null) {
-      print('User is null, showing error message');
       SchedulerBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -77,17 +75,15 @@ class _ReservationScreenState extends State<ReservationScreen> {
       return;
     }
 
-    print('Setting user data to form fields');
-    _fullNameController.text = user.fullName ?? '';
-    _emailController.text = user.email ?? '';
-    _phoneController.text = user.phone ?? '';
-    _dniController.text = user.dni ?? '';
+    _fullNameController.text = user.fullName;
+    _emailController.text = user.email;
+    _phoneController.text = user.phone;
+    _dniController.text = user.dni;
 
     _licenseImageUrl =
         user.license?.isNotEmpty == true ? user.license?.first : null;
     _imageUrl = _licenseImageUrl;
 
-    print('User data initialized');
     setState(() {}); // Actualizar la UI con los datos del usuario
   }
 
@@ -108,6 +104,20 @@ class _ReservationScreenState extends State<ReservationScreen> {
         _licenseImageUrl = url;
       });
     }
+  }
+
+  Future<void> _loadDisabledDates() async {
+    final bookingProvider =
+        Provider.of<BookingProvider>(context, listen: false);
+    final bookings = await bookingProvider.getBookingsForCar(widget.carId);
+
+    setState(() {
+      _disabledDates = bookings.expand((booking) {
+        final days = booking.endDate.difference(booking.startDate).inDays;
+        return List.generate(
+            days + 1, (index) => booking.startDate.add(Duration(days: index)));
+      }).toList();
+    });
   }
 
   @override
@@ -142,6 +152,22 @@ class _ReservationScreenState extends State<ReservationScreen> {
           child: Column(
             children: [
               SizedBox(height: AppSize.defaultPadding),
+              CustomTextField(
+                controller:
+                    TextEditingController(text: 'Vehículo: ${car?.name}'),
+                hintText: 'Vehículo: ${car?.name}',
+                obscureText: false,
+                icon: const Icon(Icons.car_repair),
+                readOnly: true,
+              ),
+              CustomTextField(
+                controller: TextEditingController(
+                    text: 'Precio: S/ ${car?.priceByDay}'),
+                hintText: 'Precio: S/ ${car?.priceByDay}',
+                obscureText: false,
+                icon: const Icon(Icons.price_check_outlined),
+                readOnly: true,
+              ),
               CustomTextField(
                 controller: _fullNameController,
                 hintText: 'Nombre completo',
@@ -190,6 +216,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                   return null;
                 },
               ),
+              SizedBox(height: AppSize.defaultPadding),
               Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: AppSize.defaultPaddingHorizontal * 1.5),
@@ -222,14 +249,15 @@ class _ReservationScreenState extends State<ReservationScreen> {
               ),
               if (_licenseImageUrl != null)
                 Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: AppSize.defaultPadding),
+                  padding: EdgeInsets.symmetric(
+                      vertical: AppSize.defaultPadding * 0.5),
                   child: Image.network(_licenseImageUrl!,
                       height: 100.w, width: 100.h),
                 ),
               DateRange(
                 initialStartDate: _startDate,
                 initialEndDate: _endDate,
+                disabledDates: _disabledDates,
                 onDateTimeRangeSelected: (start, end) {
                   setState(() {
                     _startDate = start;
@@ -237,18 +265,100 @@ class _ReservationScreenState extends State<ReservationScreen> {
                   });
                 },
               ),
-              Text('Días: ${_calculateDays()}'),
-              Text('Total: \$${_calculateTotal(car)}'),
+              Container(
+                margin: EdgeInsets.symmetric(
+                  vertical: AppSize.defaultPadding,
+                  horizontal: AppSize.defaultPaddingHorizontal * 1.5,
+                ),
+                padding: EdgeInsets.all(AppSize.defaultPadding),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryGrey,
+                  borderRadius: BorderRadius.circular(AppSize.defaultRadius),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Resumen de la reserva',
+                      style: AppStyles.h3(
+                        color: AppColors.primaryColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: AppSize.defaultPadding * 0.5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Duración:',
+                          style: AppStyles.h4(color: AppColors.darkColor),
+                        ),
+                        Text(
+                          '${_calculateDays()} día(s)',
+                          style: AppStyles.h4(
+                            color: AppColors.primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: AppSize.defaultPadding * 0.5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Precio por día:',
+                          style: AppStyles.h4(color: AppColors.darkColor),
+                        ),
+                        Text(
+                          'S/ ${car?.priceByDay ?? 0}',
+                          style: AppStyles.h4(
+                            color: AppColors.primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Divider(
+                      color: AppColors.primaryColor.withOpacity(0.5),
+                      thickness: 1,
+                      height: AppSize.defaultPadding,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Total:',
+                          style: AppStyles.h3(
+                            color: AppColors.darkColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          'S/ ${_calculateTotal(car)}',
+                          style: AppStyles.h3(
+                            color: AppColors.primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
               CustomCTAButton(
                 text: 'Confirmar Reserva',
                 onPressed: () async {
                   if (_formKey.currentState!.validate() &&
                       _licenseImageUrl != null) {
-                    bool accepted = await _showReservationPolicyModal(context);
-                    if (!accepted) {
-                      return; // Si no acepta la política de reserva, no se crea la reserva y se cierra el modal
-                    }
-
                     if (user == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -271,22 +381,26 @@ class _ReservationScreenState extends State<ReservationScreen> {
                       idUser: user.id,
                     );
 
-                    try {
-                      await bookingProvider.createBooking(booking);
-                      SchedulerBinding.instance.addPostFrameCallback((_) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Reserva creada con éxito')),
-                        );
-                      });
-                      context.pop();
-                    } catch (e) {
-                      SchedulerBinding.instance.addPostFrameCallback((_) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text('Error al crear la reserva: $e')),
-                        );
-                      });
+                    bool accepted = await _showReservationPolicyModal(
+                        context, booking, car!);
+                    if (accepted) {
+                      try {
+                        await bookingProvider.createBooking(booking);
+                        SchedulerBinding.instance.addPostFrameCallback((_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Reserva creada con éxito')),
+                          );
+                        });
+                        context.pop();
+                      } catch (e) {
+                        SchedulerBinding.instance.addPostFrameCallback((_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Error al crear la reserva: $e')),
+                          );
+                        });
+                      }
                     }
                   } else if (_licenseImageUrl == null) {
                     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -299,6 +413,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                   }
                 },
               ),
+              SizedBox(height: AppSize.defaultPadding * 0.8),
             ],
           ),
         ),
@@ -307,7 +422,11 @@ class _ReservationScreenState extends State<ReservationScreen> {
   }
 
   int _calculateDays() {
-    return _endDate.difference(_startDate).inDays + 1;
+    // Calculate the difference in hours
+    int hours = _endDate.difference(_startDate).inHours;
+
+    // Round up to the nearest day
+    return (hours / 24).ceil();
   }
 
   int _calculateTotal(Car? car) {
@@ -316,10 +435,25 @@ class _ReservationScreenState extends State<ReservationScreen> {
   }
 }
 
-Future<bool> _showReservationPolicyModal(BuildContext context) async {
+String generateWhatsAppLink(String phoneNumber, Booking booking, Car car) {
+  final message = Uri.encodeComponent('Nueva reserva:\n'
+      'Nombre: ${booking.fullName}\n'
+      'Email: ${booking.email}\n'
+      'Teléfono: ${booking.phone}\n'
+      'DNI: ${booking.dni}\n'
+      'Vehículo: ${car.name}\n'
+      'Fecha inicio: ${booking.startDate.toString().split(' ')[0]}\n'
+      'Fecha fin: ${booking.endDate.toString().split(' ')[0]}\n'
+      'Días: ${booking.qtyDays}\n'
+      'Total: S/ ${booking.total}');
+  return 'https://wa.me/$phoneNumber?text=$message';
+}
+
+Future<bool> _showReservationPolicyModal(
+    BuildContext context, Booking booking, Car car) async {
   return await showDialog<bool>(
         context: context,
-        barrierDismissible: false, // Prevent closing by tapping outside
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Política de Reserva',
@@ -340,9 +474,6 @@ Future<bool> _showReservationPolicyModal(BuildContext context) async {
                   Text('   Banco: XXXX', style: AppStyles.h3()),
                   Text('   Cuenta: XXXX-XXXX-XXXX-XXXX', style: AppStyles.h3()),
                   Text(
-                      '3. El monto del depósito es el 30% del total de la reserva.',
-                      style: AppStyles.h3()),
-                  Text(
                       '4. Si no se realiza el depósito en el tiempo establecido, la reserva será cancelada automáticamente.',
                       style: AppStyles.h3()),
                 ],
@@ -350,9 +481,7 @@ Future<bool> _showReservationPolicyModal(BuildContext context) async {
             ),
             actions: <Widget>[
               TextButton(
-                child: Text('Cancelar',
-                    style: AppStyles.h4(
-                        color: Colors.red)), // Cambiado a rojo para visibilidad
+                child: Text('Cancelar', style: AppStyles.h4(color: Colors.red)),
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
@@ -364,9 +493,34 @@ Future<bool> _showReservationPolicyModal(BuildContext context) async {
                   Navigator.of(context).pop(true);
                 },
               ),
+              TextButton(
+                child: Text(
+                    'Aceptar y Enviar la reserva por WhatsApp(Para una pronto respuesta)',
+                    style: AppStyles.h4(color: Colors.green)),
+                onPressed: () async {
+                  final whatsappLink =
+                      generateWhatsAppLink('918402962', booking, car);
+                  final Uri whatsappUri = Uri.parse(whatsappLink);
+                  try {
+                    if (await launchUrl(whatsappUri,
+                        mode: LaunchMode.externalApplication)) {
+                      // El enlace se lanzó correctamente
+                    } else {
+                      throw Exception('No se pudo abrir WhatsApp');
+                    }
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Error: No se pudo abrir WhatsApp')),
+                    );
+                  }
+                  // Agregamos esta línea para guardar la reserva y cerrar el diálogo
+                  Navigator.of(context).pop(true);
+                },
+              ),
             ],
           );
         },
       ) ??
-      false; // Provide a default value if null is returned
+      false;
 }

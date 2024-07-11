@@ -7,12 +7,23 @@ class AppTheme {
         // Font
         fontFamily: GoogleFonts.montserrat().fontFamily,
         textTheme: GoogleFonts.montserratTextTheme(),
-
         // Colors
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.primaryColor,
           brightness: Brightness.light,
           primary: AppColors.primaryColor,
+        ),
+      );
+
+  static ThemeData get darkTheme => ThemeData(
+        // Font
+        fontFamily: GoogleFonts.montserrat().fontFamily,
+        textTheme: GoogleFonts.montserratTextTheme(ThemeData.dark().textTheme),
+        // Colors
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppColors.primaryGrey,
+          brightness: Brightness.dark,
+          primary: AppColors.primaryGrey,
         ),
       );
 }

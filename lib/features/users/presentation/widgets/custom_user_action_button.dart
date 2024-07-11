@@ -12,24 +12,27 @@ class CustomUserActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: AppSize.defaultPaddingHorizontal * 1.5,
-          vertical: AppSize.defaultPadding),
-      child: ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: const WidgetStatePropertyAll(AppColors.primaryGrey),
-          shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSize.defaultRadius / 2),
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: AppSize.defaultPaddingHorizontal * 1.5,
+            vertical: AppSize.defaultPadding),
+        child: ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor:
+                const WidgetStatePropertyAll(AppColors.primaryGrey),
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSize.defaultRadius / 2),
+              ),
             ),
           ),
-        ),
-        onPressed: onPressed,
-        child: Text(
-          text,
-          style: AppStyles.h4(
-              color: AppColors.primaryColor, fontWeight: FontWeight.w600),
+          onPressed: onPressed,
+          child: Text(
+            text,
+            style: AppStyles.h4(
+                color: AppColors.primaryColor, fontWeight: FontWeight.w600),
+          ),
         ),
       ),
     );

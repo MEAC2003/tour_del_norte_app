@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tour_del_norte_app/core/config/app_router.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/widgets/widgets.dart';
+import 'package:tour_del_norte_app/features/home/presentation/providers/booking_provider.dart';
+import 'package:tour_del_norte_app/features/home/presentation/providers/car_provider.dart';
 import 'package:tour_del_norte_app/features/users/data/models/public_user.dart';
 import 'package:tour_del_norte_app/features/users/presentation/providers/users_provider.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/providers/auth_provider.dart';
@@ -13,6 +16,10 @@ class UserProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<BookingProvider>().fetchUserBookings();
+      context.read<CarProvider>();
+    });
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -57,6 +64,7 @@ class _UserProfileView extends StatelessWidget {
         padding: EdgeInsets.symmetric(
             horizontal: AppSize.defaultPaddingHorizontal * 1.5.w),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Divider(
               color: AppColors.darkColor50,
@@ -89,6 +97,33 @@ class _UserProfileView extends StatelessWidget {
                 context.push(AppRouter.editProfile);
               },
             ),
+            SizedBox(height: AppSize.defaultPadding),
+            Divider(
+              color: AppColors.darkColor50,
+              thickness: 0.5.h,
+            ),
+            SizedBox(height: AppSize.defaultPadding * 2),
+            //quiero mostrar las reservas del usuario
+            Center(
+              child: Text(
+                'Mis Reservas',
+                style: AppStyles.h2(
+                  color: AppColors.darkColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            SizedBox(height: AppSize.defaultPadding * 2),
+            SizedBox(height: AppSize.defaultPadding * 2),
+            _RecentBookings(),
+            SizedBox(height: AppSize.defaultPadding * 1.5),
+            CustomUserActionButton(
+              text: 'Ver Todas las Reservas',
+              onPressed: () {
+                context.push(AppRouter.userBookings);
+              },
+            ),
+            SizedBox(height: AppSize.defaultPadding * 4),
           ],
         ),
       ),
@@ -97,7 +132,7 @@ class _UserProfileView extends StatelessWidget {
 }
 
 class _UnauthenticatedView extends StatelessWidget {
-  const _UnauthenticatedView({super.key});
+  const _UnauthenticatedView();
 
   @override
   Widget build(BuildContext context) {
@@ -109,20 +144,21 @@ class _UnauthenticatedView extends StatelessWidget {
             'No has iniciado sesión',
             style: AppStyles.h2(color: AppColors.darkColor),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: AppSize.defaultPadding * 2),
           Text(
             'Para ver tu perfil, debes iniciar sesión o registrarte',
             textAlign: TextAlign.center,
-            style: AppStyles.h4(color: AppColors.darkColor50),
+            style: AppStyles.h4(
+              color: AppColors.darkColor50,
+            ),
           ),
-          const SizedBox(height: 30),
+          SizedBox(height: AppSize.defaultPadding),
           CustomUserActionButton(
             text: 'Iniciar Sesión',
             onPressed: () {
               context.push(AppRouter.signIn);
             },
           ),
-          const SizedBox(height: 10),
           CustomUserActionButton(
             text: 'Registrarse',
             onPressed: () {
@@ -131,6 +167,58 @@ class _UnauthenticatedView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _RecentBookings extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer2<BookingProvider, CarProvider>(
+      builder: (context, bookingProvider, carProvider, child) {
+        if (bookingProvider.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (bookingProvider.error != null) {
+          return Center(child: Text('Error: ${bookingProvider.error}'));
+        } else if (bookingProvider.userBookings.isEmpty) {
+          return const Center(child: Text('No tienes reservas recientes'));
+        } else {
+          final recentBookings = bookingProvider.userBookings.take(2).toList();
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: recentBookings.asMap().entries.map((entry) {
+              final index = entry.key;
+              final booking = entry.value;
+              final car = carProvider.getCarById(booking.idCar);
+
+              // Formatear la fecha
+              final formattedDate =
+                  DateFormat('dd/MM/yyyy HH:mm').format(booking.startDate);
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Reserva ${index + 1}:',
+                    style: AppStyles.h3(
+                      color: AppColors.darkColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    '${car?.name ?? 'Auto no encontrado'} - $formattedDate',
+                    style: AppStyles.h4(
+                      color: AppColors.darkColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: AppSize.defaultPadding),
+                ],
+              );
+            }).toList(),
+          );
+        }
+      },
     );
   }
 }

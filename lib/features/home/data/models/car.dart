@@ -26,7 +26,7 @@ class Car {
   String type;
   String fuelType;
   String year;
-
+  int idCarType;
   Car({
     required this.id,
     required this.createdAt,
@@ -43,6 +43,7 @@ class Car {
     required this.type,
     required this.fuelType,
     required this.year,
+    required this.idCarType,
   });
 
   Car copyWith({
@@ -61,6 +62,7 @@ class Car {
     String? type,
     String? fuelType,
     String? year,
+    int? idCarType,
   }) =>
       Car(
         id: id ?? this.id,
@@ -78,6 +80,7 @@ class Car {
         type: type ?? this.type,
         fuelType: fuelType ?? this.fuelType,
         year: year ?? this.year,
+        idCarType: idCarType ?? this.idCarType,
       );
 
   factory Car.fromJson(Map<String, dynamic> json) => Car(
@@ -96,6 +99,7 @@ class Car {
         type: json["type"],
         fuelType: json["fuel_type"],
         year: json["year"],
+        idCarType: json["id_car_type"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -114,5 +118,6 @@ class Car {
         "type": type,
         "fuel_type": fuelType,
         "year": year,
+        "id_car_type": idCarType,
       };
 }

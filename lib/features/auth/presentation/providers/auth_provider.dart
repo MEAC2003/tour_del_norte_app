@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:tour_del_norte_app/features/auth/domain/enums/user_role.dart';
 import 'package:tour_del_norte_app/features/auth/data/datasources/supabase_auth_data_source.dart';
 import 'package:tour_del_norte_app/features/auth/domain/repositories/auth_repository.dart';
 
@@ -8,6 +10,14 @@ class AuthProvider with ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
   User? _currentUser;
+  String? _userRole;
+
+  bool get isAuthenticated => _currentUser != null;
+
+  bool hasRole(String role) {
+    print('Checking role: Current role is $_userRole, checking against $role');
+    return _userRole == role;
+  }
 
   AuthProvider(this._authRepository) {
     _initializeSession();
@@ -16,17 +26,28 @@ class AuthProvider with ChangeNotifier {
   User? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
-  bool get isAuthenticated => _currentUser != null;
 
   Future<void> _initializeSession() async {
     _currentUser = Supabase.instance.client.auth.currentUser;
+    if (_currentUser != null) {
+      await fetchUserRole();
+    }
     notifyListeners();
 
-    Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+    Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
       _currentUser = data.session?.user;
+      if (_currentUser != null) {
+        await fetchUserRole();
+      } else {
+        _userRole = null;
+      }
       notifyListeners();
     });
   }
+
+  UserRole get userRole => UserRole.values.firstWhere(
+      (role) => role.toString().split('.').last == _userRole,
+      orElse: () => UserRole.user);
 
   void _handleAuthResult(AuthResult result) {
     if (result.success) {
@@ -65,6 +86,7 @@ class AuthProvider with ChangeNotifier {
   Future<void> signOut() async {
     await _authRepository.signOut();
     _currentUser = null;
+    _userRole = null;
     notifyListeners();
   }
 
@@ -78,6 +100,7 @@ class AuthProvider with ChangeNotifier {
       final result = await action();
       if (result.success) {
         _currentUser = Supabase.instance.client.auth.currentUser;
+        await fetchUserRole();
       } else {
         _errorMessage = result.error ?? "Authentication failed";
       }
@@ -124,9 +147,37 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // Nuevo método para verificar el estado de autenticación
+  Future<void> fetchUserRole() async {
+    if (_currentUser == null) return;
+
+    try {
+      final response = await Supabase.instance.client
+          .from('public_users')
+          .select('role')
+          .eq('id', _currentUser!.id)
+          .single();
+      _userRole = response['role'] as String?;
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching user role: $e');
+      _userRole = 'user';
+    }
+    print('Fetched user role: $_userRole');
+  }
+
   Future<void> checkAuthStatus() async {
     _currentUser = Supabase.instance.client.auth.currentUser;
+    if (_currentUser != null) {
+      await fetchUserRole();
+    }
+    notifyListeners();
+  }
+
+  Future<void> initializeUser() async {
+    _currentUser = Supabase.instance.client.auth.currentUser;
+    if (_currentUser != null) {
+      await fetchUserRole();
+    }
     notifyListeners();
   }
 }

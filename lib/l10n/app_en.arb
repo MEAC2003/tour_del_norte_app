@@ -1,0 +1,23 @@
+{
+  "appTitle": "Tour del Norte App",
+  "settings": "Settings",
+  "language": "Language",
+  "theme": "Theme",
+  "faq": "FAQ",
+  "signIn": "Sign In",
+  "signOut": "Sign Out"
+  "policiesAndConditions": "Policies and Conditions of Use",
+  "policiesIntroduction": "1. Introduction\nWelcome to Tours del Norte. These policies and conditions govern the use of our motor vehicle rental service. By using our services, you agree to comply with the terms and conditions set forth below.",
+  "companyInfo": "2. Company Information\nTours del Norte is a motor vehicle rental microenterprise, located at Bolognesi Street 626, Castilla, Piura. Founded on May 1, 2020 by Juan Carlos Taboada García, the company offers a wide variety of vehicles including SUVs, hatchbacks, crossovers, sedans, coupes, and minivans.",
+  "availableVehicles": "3. Available Vehicles\nOur customers can choose from a diverse selection of vehicles, adapted to different needs and preferences. The initial fleet began with a single vehicle and has expanded, especially during the pandemic, with the acquisition of more units and collaboration with new partners.",
+  "serviceUse": "4. Service Use\nTo use our vehicle rental service, customers must meet the following requirements:\n• Present a valid identification.\n• Possess a valid driver's license.\n• Meet the minimum age conditions established by the company.",
+  "rentalGuarantee": "5. Rental Guarantee\nIt is necessary to provide a guarantee for the rental of vehicles, which will be deposited to a bank account via POS. This bank account is not directly linked to the company owner, but to the bank. The guarantee amounts are as follows:\n• Cars: S/ 1500\n• Trucks: S/ 2000\nThe guarantee covers possible damage to the vehicle during the rental period, including scratches, dents, damage to the chassis or any other component of the vehicle. If the vehicle suffers no damage, the guarantee money will be returned immediately after the delivery and verification of the vehicle.",
+  "mileageLimit": "6. Mileage Limit\nThe daily rental includes a limit of 250 kilometers of free travel. If the user exceeds this limit, an additional charge of S/ 1.00 will be applied for each extra kilometer traveled.",
+  "userResponsibilities": "7. User Responsibilities\nThe user is responsible for the care and proper use of the vehicle during the rental period. Any damage, loss or misuse of the vehicle will be the responsibility of the renter, who must assume the corresponding repair or replacement costs.",
+  "paymentConditions": "8. Payment Conditions\nPayment for the rental service must be made according to the rates and conditions established at the time of booking. Tours del Norte reserves the right to adjust rates and conditions without prior notice.",
+  "cancellationsAndModifications": "9. Cancellations and Modifications\nCancellation and modification policies for reservations are subject to the specific conditions of each rental contract. Customers are advised to review these policies in detail before confirming their reservation.",
+  "liabilityLimitations": "10. Liability Limitations\nTours del Norte is not responsible for personal injury, economic losses, accidents or any other incident that occurs during the use of the rented vehicle. The customer is responsible for contracting additional insurance if desired.",
+  "policyModifications": "11. Policy Modifications\nThese policies and conditions may be modified by Tours del Norte at any time, and the modifications will take effect once published on our website or communicated to users.",
+  "contact": "12. Contact\nFor any questions or clarifications about our policies and conditions, you can contact us at our office located at Bolognesi Street 626, Castilla, Piura, or through our customer service number.",
+  "policyAcceptance": "13. Policy Acceptance\nBy using our vehicle rental service, you acknowledge having read, understood and accepted these policies and conditions in their entirety."
+}

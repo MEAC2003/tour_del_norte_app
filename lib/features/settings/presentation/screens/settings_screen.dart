@@ -5,26 +5,22 @@ import 'package:tour_del_norte_app/core/config/app_router.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:tour_del_norte_app/features/settings/presentation/widgets/widgets.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tour_del_norte_app/core/providers/language_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const _SettingsView();
-  }
-}
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final t = AppLocalizations.of(context)!;
 
-class _SettingsView extends StatelessWidget {
-  const _SettingsView();
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Ajustes',
+          t.settings,
           style: AppStyles.h2(
               color: AppColors.darkColor, fontWeight: FontWeight.bold),
         ),
@@ -38,7 +34,21 @@ class _SettingsView extends StatelessWidget {
               Divider(color: AppColors.darkColor50, thickness: 0.5),
               SizedBox(height: AppSize.defaultPadding / 1.5),
               const SwitchThemes(),
-              const OptionsLanguage(),
+              ListTile(
+                title: Text(t.language),
+                trailing: DropdownButton<String>(
+                  value: languageProvider.locale.languageCode,
+                  items: const [
+                    DropdownMenuItem(value: 'en', child: Text('English')),
+                    DropdownMenuItem(value: 'es', child: Text('Español')),
+                  ],
+                  onChanged: (String? value) {
+                    if (value != null) {
+                      languageProvider.setLocale(Locale(value));
+                    }
+                  },
+                ),
+              ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 trailing: const Icon(Icons.arrow_forward_ios),
@@ -51,6 +61,20 @@ class _SettingsView extends StatelessWidget {
                 ),
                 onTap: () {
                   context.push(AppRouter.faq);
+                },
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                trailing: const Icon(Icons.arrow_forward_ios),
+                title: Text(
+                  'Políticas y Condiciones',
+                  style: AppStyles.h3(
+                    color: AppColors.darkColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                onTap: () {
+                  context.push(AppRouter.policies);
                 },
               ),
               SizedBox(height: AppSize.defaultPadding / 1.5),
