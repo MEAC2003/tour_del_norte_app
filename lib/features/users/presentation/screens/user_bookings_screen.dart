@@ -8,6 +8,7 @@ import 'package:tour_del_norte_app/features/home/presentation/providers/car_prov
 
 import 'package:tour_del_norte_app/features/users/presentation/widgets/booking_expansion_tile.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserBookingsScreen extends StatefulWidget {
   const UserBookingsScreen({super.key});
@@ -23,9 +24,7 @@ class _UserBookingsScreenState extends State<UserBookingsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.read<BookingProvider>().fetchUserBookings();
-        context
-            .read<CarProvider>()
-            .loadCars(); // Asumiendo que necesitas cargar los coches
+        context.read<CarProvider>().loadCars();
       }
     });
   }
@@ -98,7 +97,10 @@ class _UserBookingsScreen extends StatelessWidget {
                               context, bookingProvider, booking.id!);
                         }
                       },
-                      bookingStatus: paymentStatus, // Pasa el estado aquí
+                      onInfo: () => _showPaymentInfoDialog(
+                          context), // Nuevo botón de info
+                      onLocation: _launchMaps,
+                      bookingStatus: paymentStatus,
                     );
                   },
                 );
@@ -106,6 +108,46 @@ class _UserBookingsScreen extends StatelessWidget {
             ),
           );
         }
+      },
+    );
+  }
+
+  void _showPaymentInfoDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Información de Pago'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                    'Por favor, realice el depósito a una de las siguientes cuentas:'),
+                SizedBox(height: 10),
+                Text('Banco: BBVA (interbancaria)'),
+                Text('Cuenta: 00247510681626106921'),
+                SizedBox(height: 10),
+                Text('Banco: BCP'),
+                Text('Cuenta: 47506816261069'),
+                SizedBox(height: 10),
+                Text('Yape o Plin: 983815949'),
+                SizedBox(height: 10),
+                Text(
+                    'Recuerde que tiene 10 minutos para realizar el depósito de la reserva.'),
+                Text(
+                    'Si no se realiza el depósito en el tiempo establecido, la reserva será cancelada.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Entendido'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
       },
     );
   }
@@ -188,4 +230,13 @@ void _showCancelDialog(
       );
     },
   );
+}
+
+Future<void> _launchMaps() async {
+  final Uri url = Uri.parse(
+      'https://www.google.com/maps/place/Francisco+Bolognesi+626/@-5.2052056,-80.619738,17z/data=!4m7!3m6!1s0x904a108f13d42f59:0x50893d171f500dde!4b1!8m2!3d-5.2052586!4d-80.619869!16s%2Fg%2F11hg2jdw0w?entry=ttu');
+
+  if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+    throw 'No se pudo abrir el mapa: $url';
+  }
 }

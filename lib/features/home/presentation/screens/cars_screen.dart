@@ -72,11 +72,13 @@ class _CarsViewState extends State<_CarsView> {
         var filteredCars = carProvider.cars.where((car) {
           if (_showOnlyAvailable && !car.isAvailable) return false;
           if (_selectedType != 'Todos' &&
-              carProvider.getCarTypeName(car.idCarType) != _selectedType)
+              carProvider.getCarTypeName(car.idCarType) != _selectedType) {
             return false;
+          }
           if (_selectedBrand != 'Todas' &&
-              carProvider.getCarBrandName(car.name) != _selectedBrand)
+              carProvider.getCarBrandName(car.name) != _selectedBrand) {
             return false;
+          }
           return car.name.toLowerCase().contains(_searchQuery.toLowerCase());
         }).toList();
 
@@ -164,9 +166,11 @@ class _CarsViewState extends State<_CarsView> {
                     carPrice: car.priceByDay.toString(),
                     carImage: car.images.isNotEmpty ? car.images[0] : '',
                     isAvailable: car.isAvailable,
-                    onTap: () {
-                      context.push(AppRouter.carDetails, extra: car.id);
-                    },
+                    onTap: car.isAvailable
+                        ? () {
+                            context.push(AppRouter.carDetails, extra: car.id);
+                          }
+                        : null,
                   );
                 },
               ),

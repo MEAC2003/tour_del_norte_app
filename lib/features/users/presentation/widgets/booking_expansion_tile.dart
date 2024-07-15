@@ -5,6 +5,8 @@ class BookingExpansionTile extends StatelessWidget {
   final String title;
   final String body;
   final VoidCallback onCancel;
+  final VoidCallback onInfo;
+  final VoidCallback onLocation;
   final String bookingStatus; // Nuevo parámetro
 
   const BookingExpansionTile({
@@ -12,7 +14,9 @@ class BookingExpansionTile extends StatelessWidget {
     required this.title,
     required this.body,
     required this.onCancel,
-    required this.bookingStatus, // Añade esto
+    required this.onInfo,
+    required this.bookingStatus,
+    required this.onLocation, // Añade esto
   });
 
   @override
@@ -53,22 +57,37 @@ class BookingExpansionTile extends StatelessWidget {
                   SizedBox(height: AppSize.defaultPadding),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: ElevatedButton(
-                      onPressed: isButtonEnabled
-                          ? onCancel
-                          : null, // Deshabilita el botón si no está habilitado
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            isButtonEnabled ? Colors.red : Colors.grey,
-                      ),
-                      child: Text(
-                        'Cancelar Reserva',
-                        style: AppStyles.h4(
-                          color: isButtonEnabled
-                              ? AppColors.primaryGrey
-                              : AppColors.darkColor50,
-                          fontWeight: FontWeight.w500,
-                        ),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: onLocation, // Nuevo botón
+                            icon: const Icon(Icons.location_on),
+                            tooltip: 'Ver ubicación',
+                          ),
+                          ElevatedButton(
+                            onPressed: onInfo,
+                            child: const Text('Info'),
+                          ),
+                          const SizedBox(width: 8), // Espacio entre botones
+                          ElevatedButton(
+                            onPressed: isButtonEnabled ? onCancel : null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  isButtonEnabled ? Colors.red : Colors.grey,
+                            ),
+                            child: Text(
+                              'Cancelar Reserva',
+                              style: AppStyles.h4(
+                                color: isButtonEnabled
+                                    ? AppColors.primaryGrey
+                                    : AppColors.darkColor50,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

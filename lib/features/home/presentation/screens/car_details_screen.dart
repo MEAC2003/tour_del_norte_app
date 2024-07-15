@@ -54,7 +54,6 @@ class _CarDetailsView extends StatelessWidget {
         if (car == null) {
           return const Center(child: Text('Vehículo no encontrado'));
         }
-
         List<CarFeature> features = [
           CarFeature(icon: Icons.calendar_today, label: car.year),
           CarFeature(icon: Icons.speed, label: car.mileage),
@@ -63,6 +62,8 @@ class _CarDetailsView extends StatelessWidget {
           CarFeature(icon: Icons.door_back_door, label: '${car.doors}'),
           CarFeature(icon: Icons.local_gas_station, label: car.fuelType),
         ];
+        // Determinar la garantía basada en el tipo de vehículo
+        int garantia = car.idCarType == 1 ? 1500 : 2000;
 
         return SingleChildScrollView(
           child: Column(
@@ -166,7 +167,7 @@ class _CarDetailsView extends StatelessWidget {
                     ),
                     SizedBox(height: AppSize.defaultPadding * 0.5),
                     Text(
-                      'Se debe pagar una garantía de S/ 1400 *',
+                      'Se debe pagar una garantía de S/ $garantia *',
                       style: AppStyles.h5(
                         color: AppColors.primaryColor,
                         fontWeight: FontWeight.w700,

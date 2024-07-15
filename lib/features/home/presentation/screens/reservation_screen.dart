@@ -451,12 +451,13 @@ String generateWhatsAppLink(String phoneNumber, Booking booking, Car car) {
 
 Future<bool> _showReservationPolicyModal(
     BuildContext context, Booking booking, Car car) async {
+  int garantia = car.idCarType == 1 ? 1500 : 2000;
   return await showDialog<bool>(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Política de Reserva',
+            title: Text('Política de Reserva y Ubicación',
                 style: AppStyles.h3(fontWeight: FontWeight.bold)),
             content: SingleChildScrollView(
               child: ListBody(
@@ -466,16 +467,40 @@ Future<bool> _showReservationPolicyModal(
                       style: AppStyles.h3()),
                   const SizedBox(height: 10),
                   Text(
-                      '1. Tiene 24 horas para realizar el depósito de la reserva.',
-                      style: AppStyles.h3()),
+                      '1. Tiene 10 minutos para realizar el depósito de la reserva.',
+                      style: AppStyles.h3(fontWeight: FontWeight.bold)),
                   Text(
-                      '2. El depósito debe realizarse a la siguiente cuenta bancaria:',
+                      '2. El depósito debe realizarse a una de las siguientes cuentas:',
+                      style: AppStyles.h3(fontWeight: FontWeight.bold)),
+                  Text('   Banco: BBVA (interbancaria)', style: AppStyles.h3()),
+                  Text('   Cuenta: 00247510681626106921',
                       style: AppStyles.h3()),
-                  Text('   Banco: XXXX', style: AppStyles.h3()),
-                  Text('   Cuenta: XXXX-XXXX-XXXX-XXXX', style: AppStyles.h3()),
+                  Text('   Banco: BCP', style: AppStyles.h3()),
+                  Text('   Cuenta: 47506816261069', style: AppStyles.h3()),
+                  Text('   Yape o Plin: 983815949', style: AppStyles.h3()),
                   Text(
-                      '4. Si no se realiza el depósito en el tiempo establecido, la reserva será cancelada automáticamente.',
+                      '3. Si no se realiza el depósito en el tiempo establecido, la reserva será cancelada.',
+                      style: AppStyles.h3(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 20),
+                  Text('4. Se debe pagar una garantía de S/ $garantia.',
+                      style: AppStyles.h3(fontWeight: FontWeight.bold)),
+                  Text(
+                      'Esta garantía se deposita en una cuenta administrada por una entidad de seguros independiente, no por el propietario del vehículo.',
                       style: AppStyles.h3()),
+                  const SizedBox(height: 20),
+                  Text('Ubicación de recojo y devolución:',
+                      style: AppStyles.h3(fontWeight: FontWeight.bold)),
+                  Text('Francisco Bolognesi 626, Piura, Perú',
+                      style: AppStyles.h3()),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: _launchMaps,
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: AppColors.primaryColor,
+                    ),
+                    child: const Text('Ver ubicación'),
+                  ),
                 ],
               ),
             ),
@@ -523,4 +548,13 @@ Future<bool> _showReservationPolicyModal(
         },
       ) ??
       false;
+}
+
+Future<void> _launchMaps() async {
+  final Uri url = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=-5.2052586,-80.619869');
+
+  if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+    throw 'No se pudo abrir el mapa: $url';
+  }
 }
