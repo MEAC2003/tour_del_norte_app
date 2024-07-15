@@ -27,7 +27,6 @@ import 'package:tour_del_norte_app/features/home/presentation/providers/car_prov
 import 'package:tour_del_norte_app/features/users/data/datasources/supabase_users_data_source.dart';
 import 'package:tour_del_norte_app/features/users/domain/repositories/users_repository_impl.dart';
 import 'package:tour_del_norte_app/features/users/presentation/providers/users_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -108,7 +107,6 @@ class MyApp extends StatelessWidget {
             themeMode: themeProvider.themeMode,
             locale: languageProvider.locale,
             localizationsDelegates: const [
-              AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,

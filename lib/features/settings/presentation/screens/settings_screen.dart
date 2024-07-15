@@ -5,20 +5,17 @@ import 'package:tour_del_norte_app/core/config/app_router.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:tour_del_norte_app/features/settings/presentation/widgets/widgets.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context)!;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          t.settings,
+          'Ajustes',
           style: AppStyles.h2(
               color: AppColors.darkColor, fontWeight: FontWeight.bold),
         ),
