@@ -58,9 +58,7 @@ class _CarDetailsView extends StatelessWidget {
         List<CarFeature> features = [
           CarFeature(icon: Icons.calendar_today, label: car.year),
           CarFeature(icon: Icons.speed, label: car.mileage),
-          CarFeature(
-              icon: Icons.settings,
-              label: 'Automático'), // Asumiendo que es automático
+          CarFeature(icon: Icons.settings, label: car.type),
           CarFeature(icon: Icons.person, label: '${car.passengers}'),
           CarFeature(icon: Icons.door_back_door, label: '${car.doors}'),
           CarFeature(icon: Icons.local_gas_station, label: car.fuelType),
@@ -222,7 +220,7 @@ class CustomCarouselSlider extends StatelessWidget {
         aspectRatio: 16 / 9,
         autoPlayCurve: Curves.fastOutSlowIn,
         enableInfiniteScroll: true,
-        autoPlayAnimationDuration: const Duration(milliseconds: 800),
+        autoPlayAnimationDuration: const Duration(milliseconds: 600),
         viewportFraction: 0.65,
       ),
       items: imgList

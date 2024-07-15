@@ -9,15 +9,29 @@ import 'package:tour_del_norte_app/features/home/presentation/providers/car_prov
 import 'package:tour_del_norte_app/features/users/presentation/widgets/booking_expansion_tile.dart';
 import 'package:tour_del_norte_app/utils/utils.dart';
 
-class UserBookingsScreen extends StatelessWidget {
+class UserBookingsScreen extends StatefulWidget {
   const UserBookingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<UserBookingsScreen> createState() => _UserBookingsScreenState();
+}
+
+class _UserBookingsScreenState extends State<UserBookingsScreen> {
+  @override
+  void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<BookingProvider>().fetchUserBookings();
-      context.read<CarProvider>();
+      if (mounted) {
+        context.read<BookingProvider>().fetchUserBookings();
+        context
+            .read<CarProvider>()
+            .loadCars(); // Asumiendo que necesitas cargar los coches
+      }
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

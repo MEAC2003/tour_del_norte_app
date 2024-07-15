@@ -16,4 +16,14 @@ class BookingRepositoryImpl implements BookingRepository {
   Future<List<Booking>> getUserBookings() async {
     return await _bookingDataSource.getUserBookings();
   }
+
+  @override
+  Future<List<Booking>> getAllBookings() async {
+    try {
+      return await _bookingDataSource.getAllBookings();
+    } catch (e) {
+      print('Error en getAllBookings en Repository: $e');
+      rethrow;
+    }
+  }
 }

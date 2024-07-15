@@ -8,6 +8,10 @@ import 'package:tour_del_norte_app/core/config/app_router.dart';
 import 'package:tour_del_norte_app/core/providers/language_provider.dart';
 import 'package:tour_del_norte_app/core/theme/app_theme.dart';
 import 'package:tour_del_norte_app/core/theme/theme_provider.dart';
+import 'package:tour_del_norte_app/features/admin/data/datasources/supabase_admin_data_source.dart';
+import 'package:tour_del_norte_app/features/admin/domain/repositories/admin_repository_impl.dart';
+import 'package:tour_del_norte_app/features/admin/presentation/providers/admin_provider.dart';
+
 import 'package:tour_del_norte_app/features/auth/data/datasources/supabase_auth_data_source.dart';
 import 'package:tour_del_norte_app/features/auth/domain/repositories/auth_repository_impl.dart';
 import 'package:tour_del_norte_app/features/auth/presentation/providers/auth_provider.dart';
@@ -51,6 +55,13 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (context) => AdminProvider(
+            AdminRepositoryImpl(
+              SupabaseAdminDataSource(Supabase.instance.client),
+            ),
+          ),
+        ),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider(authRepository)),
         ChangeNotifierProxyProvider<AuthProvider, UserProvider>(

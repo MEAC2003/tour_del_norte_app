@@ -4,6 +4,7 @@ import 'package:tour_del_norte_app/features/home/data/models/booking.dart';
 abstract class BookingDataSource {
   Future<void> createBooking(Booking booking);
   Future<List<Booking>> getUserBookings();
+  Future<List<Booking>> getAllBookings();
 }
 
 class SupabaseBookingDataSourceImpl implements BookingDataSource {
@@ -35,6 +36,18 @@ class SupabaseBookingDataSourceImpl implements BookingDataSource {
       return response.map((json) => Booking.fromJson(json)).toList();
     } catch (e) {
       throw Exception('Error fetching user bookings: $e');
+    }
+  }
+
+  @override
+  Future<List<Booking>> getAllBookings() async {
+    try {
+      final response = await _supabase.from('bookings').select();
+      print('Respuesta de getAllBookings en DataSource: $response');
+      return (response as List).map((data) => Booking.fromJson(data)).toList();
+    } catch (e) {
+      print('Error en getAllBookings en DataSource: $e');
+      throw Exception('Failed to get bookings: $e');
     }
   }
 }

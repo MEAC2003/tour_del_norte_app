@@ -11,8 +11,10 @@ class CarProvider extends ChangeNotifier {
   List<CarBrand> _carBrands = [];
   bool _isLoading = false;
 
-  CarProvider(this._carRepository);
-
+  CarProvider(this._carRepository) {
+    loadCars(); // Cargar los coches al inicializar el provider
+  }
+  List<Car> get availableCars => _cars.where((car) => car.isAvailable).toList();
   List<Car> get cars => _cars;
   List<CarType> get carTypes => _carTypes;
   List<CarBrand> get carBrands => _carBrands;
@@ -24,6 +26,10 @@ class CarProvider extends ChangeNotifier {
       _carBrands.map((brand) => brand.name).toList();
 
   Future<void> loadCars() async {
+    if (_cars.isNotEmpty) {
+      return; // Evitar cargar múltiples veces si ya hay datos
+    }
+
     _isLoading = true;
     notifyListeners();
 
@@ -32,7 +38,7 @@ class CarProvider extends ChangeNotifier {
       _carTypes = await _carRepository.getCarTypes();
       _carBrands = await _carRepository.getCarBrands();
     } catch (e) {
-      print(e);
+      print('Error loading cars: $e');
     }
 
     _isLoading = false;
